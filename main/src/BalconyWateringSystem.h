@@ -1,6 +1,8 @@
 #ifndef MAIN_SRC_BALCONYWATERINGSYSTEM_H_
 #define MAIN_SRC_BALCONYWATERINGSYSTEM_H_
 
+#include "TextGui.h"
+
 namespace balcony_watering_system {
 namespace main {
 
@@ -10,6 +12,9 @@ public:
   virtual ~BalconyWateringSystem();
 
   void run();
+
+private:
+  ui::TextGui gui;
 };
 
 } /* namespace main */

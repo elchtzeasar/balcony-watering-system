@@ -1,7 +1,5 @@
 #include "BalconyWateringSystem.h"
 
-#include <iostream>
-
 namespace balcony_watering_system {
 namespace main {
 
@@ -12,7 +10,7 @@ BalconyWateringSystem::~BalconyWateringSystem() {
 }
 
 void BalconyWateringSystem::run() {
-  std::cout << "run()" << std::endl;
+  gui.run();
 }
 
 } /* namespace main */

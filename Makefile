@@ -1,25 +1,32 @@
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 OBJS = \
-  main/target/main.o \
-  main/target/BalconyWateringSystem.o
+  target/main/main.o \
+  target/main/BalconyWateringSystem.o \
+  target/ui/TextGui.o \
+
+CXXFLAGS += -std=c++17
 
 CFLAGS += -g
 
 all:	dirs bin/BalconyWateringSystem
 
 dirs:
-	mkdir -p main/target/
+	mkdir -p target/main/
+	mkdir -p target/ui/
 	mkdir -p bin/
 
 bin/BalconyWateringSystem:	$(OBJS)
-	$(CXX) -o $@ $^
+	$(CXX) -o $@ $^ -lmenu -lncurses
 
-main/target/%.o:	$(PROJECT_ROOT)/main/src/%.cpp
-	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
+target/main/%.o:	$(PROJECT_ROOT)/main/src/%.cpp
+	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -Iui/include/ -o $@ $<
+
+target/ui/%.o:	$(PROJECT_ROOT)/ui/src/%.cpp
+	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -Iui/include/ -o $@ $<
 
 clean:
-	rm -rf main/target/
+	rm -rf target/
 	rm -rf bin/
 	rm -rf $(OBJS)
 
