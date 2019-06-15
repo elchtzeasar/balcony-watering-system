@@ -3,7 +3,7 @@
 namespace balcony_watering_system {
 namespace main {
 
-BalconyWateringSystem::BalconyWateringSystem() {
+BalconyWateringSystem::BalconyWateringSystem() : pump(), gui(pump) {
 }
 
 BalconyWateringSystem::~BalconyWateringSystem() {

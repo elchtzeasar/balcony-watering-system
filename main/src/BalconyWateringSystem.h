@@ -1,6 +1,7 @@
 #ifndef MAIN_SRC_BALCONYWATERINGSYSTEM_H_
 #define MAIN_SRC_BALCONYWATERINGSYSTEM_H_
 
+#include "Pump.h"
 #include "TextGui.h"
 
 namespace balcony_watering_system {
@@ -14,6 +15,7 @@ public:
   void run();
 
 private:
+  logic::Pump pump;
   ui::TextGui gui;
 };
 

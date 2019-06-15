@@ -1,7 +1,9 @@
 #include "TextGui.h"
 
+#include "Pump.h"
+
 #include <menu.h>
-#include <ncurses.h>
+#include <sstream>
 #include <stdlib.h>
 #include <string>
 #include <vector>
@@ -18,7 +20,11 @@ static const std::string START_PUMP_CMD = "start pump";
 static const std::string STOP_PUMP_CMD = "stop pump";
 static const std::string EXIT_CMD = "exit";
 
-TextGui::TextGui() {
+static const int DATA_COLUMN = 3;
+static const int PUMP_ROW = 2;
+static const std::string PUMP_PREFIX = "Pump: ";
+
+TextGui::TextGui(logic::Pump& pump) : pump(pump), dataWindow(NULL) {
 }
 
 TextGui::~TextGui() {
@@ -27,6 +33,11 @@ TextGui::~TextGui() {
 void TextGui::run() {
   initscr();
   noecho();
+
+  dataWindow = newwin(LINES-5, COLS-2, 3, 1);
+  box(dataWindow, 0, 0);
+
+  updatePumpMessage();
 
   auto menuWindow = newwin(3, COLS-2, LINES-3, 1);
   box(menuWindow, 0, 0);
@@ -48,6 +59,7 @@ void TextGui::run() {
 
   refresh();
   post_menu(menu);
+  wrefresh(dataWindow);
   wrefresh(menuWindow);
 
   bool keepRunning = true;
@@ -80,6 +92,9 @@ void TextGui::run() {
       break;
     }
 
+    updatePumpMessage();
+
+    wrefresh(dataWindow);
     wrefresh(menuWindow);
   }
 
@@ -92,8 +107,25 @@ void TextGui::run() {
   endwin();
 }
 
-void TextGui::doStartPump() {}
-void TextGui::doStopPump() {}
+void TextGui::doStartPump() {
+  pump.start();
+}
+void TextGui::doStopPump() {
+  pump.stop();
+}
+
+void TextGui::updatePumpMessage() {
+  std::ostringstream stream;
+  stream << PUMP_PREFIX;
+
+  if (pump.isPumping()) {
+    stream << "pumping    ";
+  }
+  else {
+    stream << "not pumping";
+  }
+  mvwaddstr(dataWindow, PUMP_ROW, DATA_COLUMN, stream.str().c_str());
+}
 
 } /* namespace ui */
 } /* namespace balcony_watering_system */
