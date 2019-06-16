@@ -5,6 +5,10 @@
 namespace balcony_watering_system {
 namespace logic {
 
+using ::std::chrono::duration_cast;
+using ::std::chrono::milliseconds;
+using ::std::chrono::steady_clock;
+
 SoilMoistureSensor::SoilMoistureSensor() {
 }
 
@@ -12,13 +16,13 @@ SoilMoistureSensor::~SoilMoistureSensor() {
 }
 
 int SoilMoistureSensor::getMoistureLevel() const {
-  static auto lastUpdate = std::chrono::steady_clock::now();
+  static auto lastUpdate = steady_clock::now();
   static int level = 0;
   static bool increment = true;
 
-  const auto now = std::chrono::steady_clock::now();
-  const auto timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastUpdate);
-  if (timeSinceLastUpdate > std::chrono::milliseconds(500)) {
+  const auto now = steady_clock::now();
+  const auto timeSinceLastUpdate = duration_cast<milliseconds>(now - lastUpdate);
+  if (timeSinceLastUpdate > milliseconds(500)) {
     if (increment)
       level++;
     else

@@ -1,6 +1,7 @@
 #ifndef UI_SRC_TEXTGUI_H_
 #define UI_SRC_TEXTGUI_H_
 
+#include <menu.h>
 #include <ncurses.h>
 
 namespace balcony_watering_system::logic {
@@ -16,7 +17,7 @@ public:
   TextGui(logic::Pump& pump, logic::SoilMoistureSensor& soilSensor);
   virtual ~TextGui();
 
-  void run();
+  bool exec();
 
 private:
   bool updatePumpMessage(bool force = false);
@@ -32,6 +33,9 @@ private:
   logic::SoilMoistureSensor& soilSensor;
 
   WINDOW* dataWindow;
+  WINDOW* menuWindow;
+  MENU* menu;
+  ITEM** menuItems;
 };
 
 } /* namespace ui */
