@@ -23,7 +23,7 @@ bin/BalconyWateringSystem:	$(OBJS)
 	$(CXX) -o $@ $^ -lmenu -lncurses
 
 target/main/%.o:	$(PROJECT_ROOT)/main/src/%.cpp
-	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -Iui/include/ -Ilogic/include/ -o $@ $<
+	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -Iui/include/ -Ilogic/include/ -I../boost.di/include/ -o $@ $<
 
 target/ui/%.o:	$(PROJECT_ROOT)/ui/src/%.cpp
 	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -Iui/include/ -Ilogic/include/ -o $@ $<

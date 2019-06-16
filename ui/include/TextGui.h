@@ -19,11 +19,14 @@ public:
   void run();
 
 private:
-  void updatePumpMessage();
-  void updateSoilMessage();
+  bool updatePumpMessage(bool force = false);
+  bool updateSoilMessage(bool force = false);
 
   void doStartPump();
   void doStopPump();
+
+  int oldSoilMoistureLevel;
+  bool oldIsPumping;
 
   logic::Pump& pump;
   logic::SoilMoistureSensor& soilSensor;

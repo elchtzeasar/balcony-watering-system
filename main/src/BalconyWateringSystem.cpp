@@ -1,10 +1,12 @@
 #include "BalconyWateringSystem.h"
 
+#include "TextGui.h"
+
 namespace balcony_watering_system {
 namespace main {
 
-BalconyWateringSystem::BalconyWateringSystem() :
-    pump(), soilSensor(), gui(pump, soilSensor) {
+BalconyWateringSystem::BalconyWateringSystem(ui::TextGui& gui) :
+    gui(gui) {
 }
 
 BalconyWateringSystem::~BalconyWateringSystem() {

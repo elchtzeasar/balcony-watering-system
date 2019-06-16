@@ -1,24 +1,24 @@
 #ifndef MAIN_SRC_BALCONYWATERINGSYSTEM_H_
 #define MAIN_SRC_BALCONYWATERINGSYSTEM_H_
 
-#include "Pump.h"
-#include "SoilMoistureSensor.h"
-#include "TextGui.h"
+namespace balcony_watering_system {
+namespace ui {
+class TextGui;
+}
+}
 
 namespace balcony_watering_system {
 namespace main {
 
 class BalconyWateringSystem {
 public:
-  BalconyWateringSystem();
+  BalconyWateringSystem(ui::TextGui& gui);
   virtual ~BalconyWateringSystem();
 
   void run();
 
 private:
-  logic::Pump pump;
-  logic::SoilMoistureSensor soilSensor;
-  ui::TextGui gui;
+  ui::TextGui& gui;
 };
 
 } /* namespace main */

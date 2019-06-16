@@ -3,11 +3,13 @@
 #include "Pump.h"
 #include "SoilMoistureSensor.h"
 
+#include <chrono>
 #include <iomanip>
 #include <menu.h>
 #include <sstream>
 #include <stdlib.h>
 #include <string>
+#include <thread>
 #include <vector>
 
 namespace balcony_watering_system {
@@ -27,6 +29,7 @@ static const int PUMP_ROW = 2;
 static const int SOIL_ROW = 3;
 
 TextGui::TextGui(logic::Pump& pump, logic::SoilMoistureSensor& soilSensor) :
+    oldSoilMoistureLevel(-1), oldIsPumping(false),
     pump(pump), soilSensor(soilSensor), dataWindow(NULL) {
 }
 
@@ -44,8 +47,6 @@ void TextGui::run() {
   box(menuWindow, 0, 0);
   keypad(menuWindow, true);
 
-  nodelay(stdscr, true);
-  nodelay(dataWindow, true);
   nodelay(menuWindow, true);
 
   vector<string> menuOptions = {START_PUMP_CMD, STOP_PUMP_CMD, EXIT_CMD};
@@ -57,11 +58,11 @@ void TextGui::run() {
   auto menu = new_menu(menuItems);
   menu_opts_off(menu, O_SHOWDESC);
   set_menu_win(menu, menuWindow);
-  set_menu_sub(menu, derwin(menuWindow, 1, COLS-4, 1, 1));
+  set_menu_sub(menu, derwin(menuWindow, 1, COLS-4, 1, 2));
   set_menu_format(menu, 1, 3);
 
-  updatePumpMessage();
-  updateSoilMessage();
+  updatePumpMessage(true);
+  updateSoilMessage(true);
 
   refresh();
   post_menu(menu);
@@ -75,10 +76,13 @@ void TextGui::run() {
     switch (c) {
     case KEY_LEFT:
       menu_driver(menu, REQ_LEFT_ITEM);
+      wrefresh(menuWindow);
       break;
     case KEY_RIGHT:
       menu_driver(menu, REQ_RIGHT_ITEM);
+      wrefresh(menuWindow);
       break;
+    case ' ':
     case KEY_ENTER_: {
       ITEM* currentItem = current_item(menu);
       string currentName = item_name(currentItem);
@@ -98,19 +102,23 @@ void TextGui::run() {
       break;
     }
 
-    updatePumpMessage();
-    updateSoilMessage();
+    bool updated = false;
+    updated = updated || updatePumpMessage();
+    updated = updated || updateSoilMessage();
 
-    wrefresh(dataWindow);
-    wrefresh(menuWindow);
+    if (updated) {
+      wrefresh(dataWindow);
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 
   free(menuItems);
   unpost_menu(menu);
-  free_menu(menu);
   for (int i = 0; i < menuOptions.size(); ++i) {
     free_item(menuItems[i]);
   }
+  free_menu(menu);
   endwin();
 }
 
@@ -121,31 +129,46 @@ void TextGui::doStopPump() {
   pump.stop();
 }
 
-void TextGui::updatePumpMessage() {
+bool TextGui::updatePumpMessage(bool force) {
   std::ostringstream stream;
   stream << "Pump: ";
 
-  if (pump.isPumping()) {
-    stream << "pumping    ";
+  const bool isPumping = pump.isPumping();
+
+  if (oldIsPumping != isPumping || force) {
+    if (isPumping) {
+      stream << "pumping    ";
+    }
+    else {
+      stream << "not pumping";
+    }
+    mvwaddstr(dataWindow, PUMP_ROW, DATA_COLUMN, stream.str().c_str());
+
+    oldIsPumping = isPumping;
+    return true;
   }
-  else {
-    stream << "not pumping";
-  }
-  mvwaddstr(dataWindow, PUMP_ROW, DATA_COLUMN, stream.str().c_str());
+  return false;
 }
 
-void TextGui::updateSoilMessage() {
+bool TextGui::updateSoilMessage(bool force) {
   std::ostringstream stream;
 
   const int moistureLevel = soilSensor.getMoistureLevel();
-  const int PROGRESS_BAR_WIDTH = COLS - 50;
-  const int currentWidth = moistureLevel / 100.0 * PROGRESS_BAR_WIDTH;
 
-  stream << "Soil moisture: [";
-  stream << string(currentWidth, '=') << string(PROGRESS_BAR_WIDTH - currentWidth, ' ');
-  stream << "] " << std::setw(3) << std::setfill(' ') << moistureLevel << '%';
+  if (oldSoilMoistureLevel != moistureLevel || force) {
+    const int PROGRESS_BAR_WIDTH = COLS - 50;
+    const int currentWidth = moistureLevel / 100.0 * PROGRESS_BAR_WIDTH;
 
-  mvwaddstr(dataWindow, SOIL_ROW, DATA_COLUMN, stream.str().c_str());
+    stream << "Soil moisture: [";
+    stream << string(currentWidth, '=') << string(PROGRESS_BAR_WIDTH - currentWidth, ' ');
+    stream << "] " << std::setw(3) << std::setfill(' ') << moistureLevel << '%';
+
+    mvwaddstr(dataWindow, SOIL_ROW, DATA_COLUMN, stream.str().c_str());
+
+    oldSoilMoistureLevel = moistureLevel;
+    return true;
+  }
+  return false;
 }
 
 } /* namespace ui */
