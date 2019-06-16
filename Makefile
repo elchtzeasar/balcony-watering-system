@@ -5,6 +5,7 @@ OBJS = \
   target/main/BalconyWateringSystem.o \
   target/ui/TextGui.o \
   target/logic/Pump.o \
+  target/logic/SoilMoistureSensor.o \
 
 CXXFLAGS += -std=c++17
 

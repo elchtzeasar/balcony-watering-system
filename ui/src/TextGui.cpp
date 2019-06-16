@@ -1,7 +1,9 @@
 #include "TextGui.h"
 
 #include "Pump.h"
+#include "SoilMoistureSensor.h"
 
+#include <iomanip>
 #include <menu.h>
 #include <sstream>
 #include <stdlib.h>
@@ -22,9 +24,10 @@ static const std::string EXIT_CMD = "exit";
 
 static const int DATA_COLUMN = 3;
 static const int PUMP_ROW = 2;
-static const std::string PUMP_PREFIX = "Pump: ";
+static const int SOIL_ROW = 3;
 
-TextGui::TextGui(logic::Pump& pump) : pump(pump), dataWindow(NULL) {
+TextGui::TextGui(logic::Pump& pump, logic::SoilMoistureSensor& soilSensor) :
+    pump(pump), soilSensor(soilSensor), dataWindow(NULL) {
 }
 
 TextGui::~TextGui() {
@@ -37,11 +40,13 @@ void TextGui::run() {
   dataWindow = newwin(LINES-5, COLS-2, 3, 1);
   box(dataWindow, 0, 0);
 
-  updatePumpMessage();
-
   auto menuWindow = newwin(3, COLS-2, LINES-3, 1);
   box(menuWindow, 0, 0);
   keypad(menuWindow, true);
+
+  nodelay(stdscr, true);
+  nodelay(dataWindow, true);
+  nodelay(menuWindow, true);
 
   vector<string> menuOptions = {START_PUMP_CMD, STOP_PUMP_CMD, EXIT_CMD};
   ITEM** menuItems = (ITEM**) calloc(menuOptions.size() + 1, sizeof(ITEM*));
@@ -55,7 +60,8 @@ void TextGui::run() {
   set_menu_sub(menu, derwin(menuWindow, 1, COLS-4, 1, 1));
   set_menu_format(menu, 1, 3);
 
-  printw("TextGuid");
+  updatePumpMessage();
+  updateSoilMessage();
 
   refresh();
   post_menu(menu);
@@ -93,6 +99,7 @@ void TextGui::run() {
     }
 
     updatePumpMessage();
+    updateSoilMessage();
 
     wrefresh(dataWindow);
     wrefresh(menuWindow);
@@ -116,7 +123,7 @@ void TextGui::doStopPump() {
 
 void TextGui::updatePumpMessage() {
   std::ostringstream stream;
-  stream << PUMP_PREFIX;
+  stream << "Pump: ";
 
   if (pump.isPumping()) {
     stream << "pumping    ";
@@ -125,6 +132,20 @@ void TextGui::updatePumpMessage() {
     stream << "not pumping";
   }
   mvwaddstr(dataWindow, PUMP_ROW, DATA_COLUMN, stream.str().c_str());
+}
+
+void TextGui::updateSoilMessage() {
+  std::ostringstream stream;
+
+  const int moistureLevel = soilSensor.getMoistureLevel();
+  const int PROGRESS_BAR_WIDTH = COLS - 50;
+  const int currentWidth = moistureLevel / 100.0 * PROGRESS_BAR_WIDTH;
+
+  stream << "Soil moisture: [";
+  stream << string(currentWidth, '=') << string(PROGRESS_BAR_WIDTH - currentWidth, ' ');
+  stream << "] " << std::setw(3) << std::setfill(' ') << moistureLevel << '%';
+
+  mvwaddstr(dataWindow, SOIL_ROW, DATA_COLUMN, stream.str().c_str());
 }
 
 } /* namespace ui */

@@ -2,6 +2,7 @@
 #define MAIN_SRC_BALCONYWATERINGSYSTEM_H_
 
 #include "Pump.h"
+#include "SoilMoistureSensor.h"
 #include "TextGui.h"
 
 namespace balcony_watering_system {
@@ -16,6 +17,7 @@ public:
 
 private:
   logic::Pump pump;
+  logic::SoilMoistureSensor soilSensor;
   ui::TextGui gui;
 };
 
