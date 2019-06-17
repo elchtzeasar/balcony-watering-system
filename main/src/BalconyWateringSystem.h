@@ -15,6 +15,9 @@ public:
   BalconyWateringSystem(ui::TextGui& gui);
   virtual ~BalconyWateringSystem();
 
+  BalconyWateringSystem& operator=(BalconyWateringSystem&) = delete;
+  BalconyWateringSystem& operator=(BalconyWateringSystem&&) = delete;
+
   void run();
 
 private:

@@ -1,0 +1,7 @@
+---
+SoilMoistureSensor:
+  name: outer
+SoilMoistureSensor:
+  name: inner
+Pump:
+  name: pump

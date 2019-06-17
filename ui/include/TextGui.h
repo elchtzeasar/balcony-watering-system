@@ -3,8 +3,10 @@
 
 #include <menu.h>
 #include <ncurses.h>
+#include <vector>
 
 namespace balcony_watering_system::logic {
+  class LogicFactory;
   class Pump;
   class SoilMoistureSensor;
 }
@@ -14,23 +16,20 @@ namespace ui {
 
 class TextGui {
 public:
-  TextGui(logic::Pump& pump, logic::SoilMoistureSensor& soilSensor);
+  TextGui(logic::LogicFactory& logicFactory);
   virtual ~TextGui();
 
   bool exec();
 
 private:
-  bool updatePumpMessage(bool force = false);
-  bool updateSoilMessage(bool force = false);
+  int updatePumpMessages(int nextRow);
+  int updateSoilMessages(int nextRow);
 
-  void doStartPump();
-  void doStopPump();
+  void doStartPumps();
+  void doStopPumps();
 
-  int oldSoilMoistureLevel;
-  bool oldIsPumping;
-
-  logic::Pump& pump;
-  logic::SoilMoistureSensor& soilSensor;
+  std::vector<logic::Pump*> pumps;
+  std::vector<logic::SoilMoistureSensor*> soilSensors;
 
   WINDOW* dataWindow;
   WINDOW* menuWindow;

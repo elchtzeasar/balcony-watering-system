@@ -1,18 +1,27 @@
 #include "SoilMoistureSensor.h"
 
+#include "ISoilMoistureSensorConfiguration.h"
+
 #include <chrono>
 
 namespace balcony_watering_system {
 namespace logic {
 
+using ::balcony_watering_system::configuration::ISoilMoistureSensorConfiguration;
 using ::std::chrono::duration_cast;
 using ::std::chrono::milliseconds;
 using ::std::chrono::steady_clock;
+using ::std::string;
 
-SoilMoistureSensor::SoilMoistureSensor() {
+SoilMoistureSensor::SoilMoistureSensor(const ISoilMoistureSensorConfiguration& configuration) :
+  name(configuration.getName()) {
 }
 
 SoilMoistureSensor::~SoilMoistureSensor() {
+}
+
+const string& SoilMoistureSensor::getName() const {
+  return name;
 }
 
 int SoilMoistureSensor::getMoistureLevel() const {

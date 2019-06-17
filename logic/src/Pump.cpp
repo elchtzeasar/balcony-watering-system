@@ -1,12 +1,23 @@
 #include "Pump.h"
 
+#include "IPumpConfiguration.h"
+
 namespace balcony_watering_system {
 namespace logic {
 
-Pump::Pump() : started(false) {
+using ::balcony_watering_system::configuration::IPumpConfiguration;
+using ::std::string;
+
+Pump::Pump(const IPumpConfiguration& configuration) :
+    started(false),
+    name(configuration.getName()) {
 }
 
 Pump::~Pump() {
+}
+
+const string& Pump::getName() const {
+  return name;
 }
 
 void Pump::start() {
