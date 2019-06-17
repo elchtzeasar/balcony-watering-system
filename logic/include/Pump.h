@@ -4,17 +4,20 @@
 #include <string>
 
 namespace balcony_watering_system::configuration {
-
 class IPumpConfiguration;
-
 } /* namespace balcony_watering_system::configuration */
+
+namespace balcony_watering_system::hardware {
+class IMotorController;
+} /* namespace balcony_watering_system::hardware */
 
 namespace balcony_watering_system {
 namespace logic {
 
 class Pump {
 public:
-  Pump(const configuration::IPumpConfiguration& configuration);
+  Pump(const configuration::IPumpConfiguration& configuration,
+       hardware::IMotorController& motorController);
   virtual ~Pump();
 
   const std::string& getName() const;
@@ -25,8 +28,9 @@ public:
   bool isPumping() const;
 
 private:
-  bool started;
   const std::string name;
+
+  hardware::IMotorController& motorController;
 };
 
 } /* namespace logic */

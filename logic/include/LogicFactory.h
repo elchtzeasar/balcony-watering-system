@@ -4,10 +4,12 @@
 #include <vector>
 
 namespace balcony_watering_system::configuration {
-
 class ConfigurationFile;
-
 } /* namespace balcony_watering_system::configuration */
+
+namespace balcony_watering_system::hardware {
+class HWFactory;
+} /* namespace balcony_watering_system::hardware */
 
 namespace balcony_watering_system {
 namespace logic {
@@ -17,7 +19,8 @@ class SoilMoistureSensor;
 
 class LogicFactory {
 public:
-  LogicFactory(const configuration::ConfigurationFile& configurationFile);
+  LogicFactory(const configuration::ConfigurationFile& configurationFile,
+               hardware::HWFactory& hwFactory);
   virtual ~LogicFactory();
 
   LogicFactory& operator=(const LogicFactory&) = delete;
@@ -32,6 +35,7 @@ public:
 
 private:
   const configuration::ConfigurationFile& configurationFile;
+  hardware::HWFactory& hwFactory;
 
   std::vector<Pump*> pumps;
   std::vector<SoilMoistureSensor*> soilMoistureSensors;

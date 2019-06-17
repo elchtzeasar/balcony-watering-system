@@ -1,6 +1,9 @@
 #include "LogicFactory.h"
 
 #include "ConfigurationFile.h"
+#include "IPumpConfiguration.h"
+#include "ISoilMoistureSensorConfiguration.h"
+#include "HWFactory.h"
 #include "Pump.h"
 #include "SoilMoistureSensor.h"
 
@@ -8,9 +11,12 @@ namespace balcony_watering_system {
 namespace logic {
 
 using ::balcony_watering_system::configuration::ConfigurationFile;
+using ::balcony_watering_system::hardware::HWFactory;
 
-LogicFactory::LogicFactory(const ConfigurationFile& configurationFile) :
+LogicFactory::LogicFactory(const ConfigurationFile& configurationFile,
+                           HWFactory& hwFactory) :
   configurationFile(configurationFile),
+  hwFactory(hwFactory),
   pumps(),
   soilMoistureSensors() {
 
@@ -21,11 +27,13 @@ LogicFactory::~LogicFactory() {
 
 void LogicFactory::create() {
   for (const auto configuration : configurationFile.getPumpConfigurations()) {
-    pumps.push_back(new Pump(*configuration));
+    auto& motor = hwFactory.getMotor(configuration->getMotor());
+    pumps.push_back(new Pump(*configuration, motor));
   }
 
   for (const auto configuration : configurationFile.getSoilMoistureSensorConfigurations()) {
-    soilMoistureSensors.push_back(new SoilMoistureSensor(*configuration));
+    auto& sensor = hwFactory.getSoilMoistureSensor(configuration->getSensor());
+    soilMoistureSensors.push_back(new SoilMoistureSensor(*configuration, sensor));
   }
 }
 

@@ -12,13 +12,14 @@ public:
   PumpConfiguration();
   virtual ~PumpConfiguration();
 
-  virtual Type getType() const override;
   virtual void setField(const std::string& fieldName, const std::string& value) override;
 
   virtual const std::string& getName() const override;
+  virtual const std::string& getMotor() const override;
 
 private:
   std::string name;
+  std::string motor;
 };
 
 } /* namespace configuration */

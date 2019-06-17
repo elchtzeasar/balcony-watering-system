@@ -11,6 +11,7 @@ public:
   virtual ~ISoilMoistureSensorConfiguration() = default;
 
   virtual const std::string& getName() const = 0;
+  virtual const std::string& getSensor() const = 0;
 };
 
 } /* namespace configuration */

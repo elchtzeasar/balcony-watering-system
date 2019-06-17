@@ -2,6 +2,7 @@
 
 #include "IConfiguration.h"
 #include "PumpConfiguration.h"
+#include "SimulationConfiguration.h"
 #include "SoilMoistureSensorConfiguration.h"
 
 #include <cassert>
@@ -51,10 +52,10 @@ const vector<IPumpConfiguration const *> ConfigurationFile::getPumpConfiguration
   vector<IPumpConfiguration const *> result;
 
   for (const auto configuration : configurations) {
-    auto pumpConfiguration = dynamic_cast<IPumpConfiguration const*>(configuration);
+    auto specializedConfiguration = dynamic_cast<IPumpConfiguration const*>(configuration);
 
-    if (pumpConfiguration) {
-      result.push_back(pumpConfiguration);
+    if (specializedConfiguration) {
+      result.push_back(specializedConfiguration);
     }
   }
 
@@ -64,12 +65,25 @@ const vector<IPumpConfiguration const *> ConfigurationFile::getPumpConfiguration
 const vector<ISoilMoistureSensorConfiguration const *> ConfigurationFile::getSoilMoistureSensorConfigurations() const {
   vector<ISoilMoistureSensorConfiguration const *> result;
 
+  for (const auto configuration : configurations) {
+    auto specializedConfiguration = dynamic_cast<ISoilMoistureSensorConfiguration const*>(configuration);
+
+    if (specializedConfiguration) {
+      result.push_back(specializedConfiguration);
+    }
+  }
+
+  return result;
+}
+
+const vector<ISimulationConfiguration const *> ConfigurationFile::getSimulationConfigurations() const {
+  vector<ISimulationConfiguration const *> result;
 
   for (const auto configuration : configurations) {
-    auto sensorConfiguration = dynamic_cast<ISoilMoistureSensorConfiguration const*>(configuration);
+    auto specializedConfiguration = dynamic_cast<ISimulationConfiguration const*>(configuration);
 
-    if (sensorConfiguration) {
-      result.push_back(sensorConfiguration);
+    if (specializedConfiguration) {
+      result.push_back(specializedConfiguration);
     }
   }
 
@@ -153,7 +167,10 @@ IConfiguration* ConfigurationFile::createConfiguration(const string& type) {
   else if (type == "Pump") {
     return new PumpConfiguration();
   }
-  assert(false && "unknown logic/type pair");
+  else if (type == "Simulation") {
+    return new SimulationConfiguration();
+  }
+  assert(false && "unknown type");
   return nullptr;
 }
 

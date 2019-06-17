@@ -152,14 +152,14 @@ int TextGui::updateSoilMessages(int nextRow) {
   for (auto sensor : soilSensors) {
     ostringstream stream;
 
-    const int moistureLevel = sensor->getMoistureLevel();
+    const int moisturePercentage = sensor->getMoistureLevelInPercent();
 
     const int PROGRESS_BAR_WIDTH = COLS - 50;
-    const int currentWidth = moistureLevel / 100.0 * PROGRESS_BAR_WIDTH;
+    const int currentWidth = moisturePercentage / 100.0 * PROGRESS_BAR_WIDTH;
 
     stream << "Soil moisture[" << sensor->getName() << "]: ";
     stream << string(currentWidth, '=') << string(PROGRESS_BAR_WIDTH - currentWidth, ' ');
-    stream << "] " << std::setw(3) << std::setfill(' ') << moistureLevel << '%';
+    stream << "] " << std::setw(3) << std::setfill(' ') << moisturePercentage << '%';
 
     mvwaddstr(dataWindow, nextRow, DATA_COLUMN, stream.str().c_str());
     nextRow++;

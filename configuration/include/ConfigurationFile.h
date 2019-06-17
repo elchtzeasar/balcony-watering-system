@@ -12,6 +12,7 @@ namespace configuration {
 class IConfiguration;
 class IPumpConfiguration;
 class ISoilMoistureSensorConfiguration;
+class ISimulationConfiguration;
 
 class ConfigurationFile {
 public:
@@ -26,6 +27,7 @@ public:
   const std::vector<IPumpConfiguration const *> getPumpConfigurations() const;
   const std::vector<ISoilMoistureSensorConfiguration const *>
   getSoilMoistureSensorConfigurations() const;
+  const std::vector<ISimulationConfiguration const *> getSimulationConfigurations() const;
 
 private:
   enum class ParseState { NONE, EXPECTING_TYPE, TYPE_RECEIVED, EXPECTING_KEY, EXPECTING_VALUE };

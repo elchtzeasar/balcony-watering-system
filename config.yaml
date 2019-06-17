@@ -1,7 +1,14 @@
 ---
 SoilMoistureSensor:
   name: outer
+  sensor: outer
 SoilMoistureSensor:
   name: inner
+  sensor: inner
 Pump:
   name: pump
+  motor: ctrl
+Simulation:
+  soil-sensor: outer
+  soil-sensor: inner
+  motor: ctrl

@@ -12,13 +12,14 @@ public:
   SoilMoistureSensorConfiguration();
   virtual ~SoilMoistureSensorConfiguration();
 
-  virtual Type getType() const override;
   virtual void setField(const std::string& fieldName, const std::string& value) override;
 
   virtual const std::string& getName() const override;
+  virtual const std::string& getSensor() const override;
 
 private:
   std::string name;
+  std::string sensor;
 };
 
 } /* namespace configuration */

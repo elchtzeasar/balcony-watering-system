@@ -1,10 +1,12 @@
 #ifndef MAIN_SRC_BALCONYWATERINGSYSTEM_H_
 #define MAIN_SRC_BALCONYWATERINGSYSTEM_H_
 
-namespace balcony_watering_system {
-namespace ui {
-class TextGui;
+namespace balcony_watering_system::hardware {
+class Master;
 }
+
+namespace balcony_watering_system::ui {
+class TextGui;
 }
 
 namespace balcony_watering_system {
@@ -12,7 +14,7 @@ namespace main {
 
 class BalconyWateringSystem {
 public:
-  BalconyWateringSystem(ui::TextGui& gui);
+  BalconyWateringSystem(hardware::Master& master, ui::TextGui& gui);
   virtual ~BalconyWateringSystem();
 
   BalconyWateringSystem& operator=(BalconyWateringSystem&) = delete;
@@ -21,6 +23,7 @@ public:
   void run();
 
 private:
+  hardware::Master& master;
   ui::TextGui& gui;
 };
 
