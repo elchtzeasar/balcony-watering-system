@@ -3,7 +3,7 @@
 #include "IConfiguration.h"
 #include "PumpConfiguration.h"
 #include "SimulationConfiguration.h"
-#include "SoilMoistureSensorConfiguration.h"
+#include "SoilMoistureMeasurementConfiguration.h"
 
 #include <cassert>
 #include <iostream>
@@ -62,11 +62,11 @@ const vector<IPumpConfiguration const *> ConfigurationFile::getPumpConfiguration
   return result;
 }
 
-const vector<ISoilMoistureSensorConfiguration const *> ConfigurationFile::getSoilMoistureSensorConfigurations() const {
-  vector<ISoilMoistureSensorConfiguration const *> result;
+const vector<ISoilMoistureMeasurementConfiguration const *> ConfigurationFile::getSoilMoistureMeasurementConfigurations() const {
+  vector<ISoilMoistureMeasurementConfiguration const *> result;
 
   for (const auto configuration : configurations) {
-    auto specializedConfiguration = dynamic_cast<ISoilMoistureSensorConfiguration const*>(configuration);
+    auto specializedConfiguration = dynamic_cast<ISoilMoistureMeasurementConfiguration const*>(configuration);
 
     if (specializedConfiguration) {
       result.push_back(specializedConfiguration);
@@ -161,8 +161,8 @@ ConfigurationFile::ConsumeResult ConfigurationFile::consume(
 }
 
 IConfiguration* ConfigurationFile::createConfiguration(const string& type) {
-  if (type == "SoilMoistureSensor") {
-    return new SoilMoistureSensorConfiguration();
+  if (type == "SoilMoistureMeasurement") {
+    return new SoilMoistureMeasurementConfiguration();
   }
   else if (type == "Pump") {
     return new PumpConfiguration();

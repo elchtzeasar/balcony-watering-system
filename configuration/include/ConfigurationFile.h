@@ -11,7 +11,7 @@ namespace configuration {
 
 class IConfiguration;
 class IPumpConfiguration;
-class ISoilMoistureSensorConfiguration;
+class ISoilMoistureMeasurementConfiguration;
 class ISimulationConfiguration;
 
 class ConfigurationFile {
@@ -25,8 +25,8 @@ public:
   void parse();
 
   const std::vector<IPumpConfiguration const *> getPumpConfigurations() const;
-  const std::vector<ISoilMoistureSensorConfiguration const *>
-  getSoilMoistureSensorConfigurations() const;
+  const std::vector<ISoilMoistureMeasurementConfiguration const *>
+  getSoilMoistureMeasurementConfigurations() const;
   const std::vector<ISimulationConfiguration const *> getSimulationConfigurations() const;
 
 private:

@@ -2,23 +2,27 @@
 
 #include "ConfigurationFile.h"
 #include "IPumpConfiguration.h"
-#include "ISoilMoistureSensorConfiguration.h"
+#include "ISoilMoistureMeasurementConfiguration.h"
 #include "HWFactory.h"
 #include "Pump.h"
-#include "SoilMoistureSensor.h"
+#include "SoilMoistureMeasurement.h"
+
+#include <vector>
 
 namespace balcony_watering_system {
 namespace logic {
 
+using ::std::vector;
 using ::balcony_watering_system::configuration::ConfigurationFile;
 using ::balcony_watering_system::hardware::HWFactory;
+using ::balcony_watering_system::hardware::ISoilMoistureSensor;
 
 LogicFactory::LogicFactory(const ConfigurationFile& configurationFile,
                            HWFactory& hwFactory) :
   configurationFile(configurationFile),
   hwFactory(hwFactory),
   pumps(),
-  soilMoistureSensors() {
+  soilMoistureMeasurements() {
 
 }
 
@@ -31,9 +35,14 @@ void LogicFactory::create() {
     pumps.push_back(new Pump(*configuration, motor));
   }
 
-  for (const auto configuration : configurationFile.getSoilMoistureSensorConfigurations()) {
-    auto& sensor = hwFactory.getSoilMoistureSensor(configuration->getSensor());
-    soilMoistureSensors.push_back(new SoilMoistureSensor(*configuration, sensor));
+  for (const auto configuration : configurationFile.getSoilMoistureMeasurementConfigurations()) {
+    vector<ISoilMoistureSensor*> sensors;
+    const auto& sensorNames = configuration->getSensors();
+    for (const auto& sensorName : sensorNames) {
+      auto& sensor = hwFactory.getSoilMoistureSensor(sensorName);
+      sensors.push_back(&sensor);
+    }
+    soilMoistureMeasurements.push_back(new SoilMoistureMeasurement(*configuration, sensors));
   }
 }
 
@@ -45,12 +54,12 @@ const std::vector<Pump*>& LogicFactory::getPumps() const {
   return pumps;
 }
 
-const std::vector<SoilMoistureSensor*>& LogicFactory::getSoilMoistureSensors() {
-  return soilMoistureSensors;
+const std::vector<SoilMoistureMeasurement*>& LogicFactory::getSoilMoistureMeasurements() {
+  return soilMoistureMeasurements;
 }
 
-const std::vector<SoilMoistureSensor*>& LogicFactory::getSoilMoistureSensors() const {
-  return soilMoistureSensors;
+const std::vector<SoilMoistureMeasurement*>& LogicFactory::getSoilMoistureMeasurements() const {
+  return soilMoistureMeasurements;
 }
 
 } /* namespace logic */

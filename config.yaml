@@ -1,10 +1,8 @@
 ---
-SoilMoistureSensor:
-  name: outer
-  sensor: outer
-SoilMoistureSensor:
-  name: inner
+SoilMoistureMeasurement:
+  name: box
   sensor: inner
+  sensor: outer
 Pump:
   name: pump
   motor: ctrl

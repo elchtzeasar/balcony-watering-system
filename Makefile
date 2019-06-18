@@ -5,7 +5,7 @@ OBJS = \
   .target/main/BalconyWateringSystem.o \
   .target/configuration/ConfigurationFile.o \
   .target/configuration/SimulationConfiguration.o \
-  .target/configuration/SoilMoistureSensorConfiguration.o \
+  .target/configuration/SoilMoistureMeasurementConfiguration.o \
   .target/configuration/PumpConfiguration.o \
   .target/hardware/HWFactory.o \
   .target/hardware/Master.o \
@@ -13,7 +13,7 @@ OBJS = \
   .target/hardware/SimulatedSoilMoistureSensor.o \
   .target/logic/LogicFactory.o \
   .target/logic/Pump.o \
-  .target/logic/SoilMoistureSensor.o \
+  .target/logic/SoilMoistureMeasurement.o \
   .target/ui/TextGui.o \
 
 CXXFLAGS += -std=c++17
@@ -62,6 +62,7 @@ bin/BalconyWateringSystem:	$(OBJS)
 
 .target/ui/%.o:	$(PROJECT_ROOT)/ui/src/%.cpp
 	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) \
+	-Ihardware/include/ \
 	-Ilogic/include/ \
 	-Iui/include/ \
 	-o $@ $<

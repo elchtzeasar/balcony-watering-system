@@ -1,20 +1,24 @@
 #include "TextGui.h"
 
+#include "IMotorController.h"
+#include "ISoilMoistureSensor.h"
 #include "LogicFactory.h"
+#include "HWFactory.h"
 #include "Pump.h"
-#include "SoilMoistureSensor.h"
+#include "SoilMoistureMeasurement.h"
 
+#include <algorithm>
 #include <iomanip>
 #include <sstream>
 #include <stdlib.h>
 #include <string>
-#include <thread>
 #include <vector>
 
 namespace balcony_watering_system {
 namespace ui {
 
 using ::balcony_watering_system::logic::LogicFactory;
+using ::balcony_watering_system::hardware::HWFactory;
 using ::std::ostringstream;
 using ::std::string;
 using ::std::vector;
@@ -29,17 +33,20 @@ static const vector<string> menuOptions = {START_PUMPS_CMD, STOP_PUMPS_CMD, EXIT
 static const int DATA_COLUMN = 3;
 static const int FIRST_DATA_ROW = 2;
 
-TextGui::TextGui(LogicFactory& logicFactory) :
+TextGui::TextGui(const LogicFactory& logicFactory, const HWFactory& hwFactory) :
     pumps(logicFactory.getPumps()),
-    soilSensors(logicFactory.getSoilMoistureSensors()),
+    motors(hwFactory.getMotors()),
+    soilMeasurements(logicFactory.getSoilMoistureMeasurements()),
+    soilSensors(hwFactory.getSoilMoistureSensors()),
     dataWindow(NULL),
     menuWindow(NULL),
     menu(NULL),
-    menuItems(NULL) {
+    menuItems(NULL),
+    nameEndColumn(0) {
   initscr();
   noecho();
 
-  dataWindow = newwin(LINES-5, COLS-2, 3, 1);
+  dataWindow = newwin(LINES-6, COLS-2, 3, 1);
   box(dataWindow, 0, 0);
 
   menuWindow = newwin(3, COLS-2, LINES-3, 1);
@@ -60,7 +67,9 @@ TextGui::TextGui(LogicFactory& logicFactory) :
   set_menu_format(menu, 1, 3);
 
   auto nextDataRow = updatePumpMessages(FIRST_DATA_ROW);
-  nextDataRow = updateSoilMessages(nextDataRow);
+  nextDataRow = updateMotorMessages(nextDataRow);
+  nextDataRow = updateLogicSoilMessages(nextDataRow);
+  nextDataRow = updateSensorSoilMessages(nextDataRow);
 
   refresh();
   post_menu(menu);
@@ -111,7 +120,9 @@ bool TextGui::exec() {
   }
 
   auto nextDataRow = updatePumpMessages(FIRST_DATA_ROW);
-  nextDataRow = updateSoilMessages(nextDataRow);
+  nextDataRow = updateMotorMessages(nextDataRow);
+  nextDataRow = updateLogicSoilMessages(nextDataRow);
+  nextDataRow = updateSensorSoilMessages(nextDataRow);
 
   wrefresh(dataWindow);
 
@@ -132,40 +143,86 @@ void TextGui::doStopPumps() {
 int TextGui::updatePumpMessages(int nextRow) {
   for (auto pump : pumps) {
     const bool isPumping = pump->isPumping();
+    const string message = isPumping ? "pumping" : "not pumping";
 
-    ostringstream stream;
-    stream << "Pump[" << pump->getName() << "]: ";
-    if (isPumping) {
-      stream << "pumping    ";
-    }
-    else {
-      stream << "not pumping";
-    }
-
-    mvwaddstr(dataWindow, nextRow, DATA_COLUMN, stream.str().c_str());
+    displayData(nextRow, "Pump", pump->getName(), message);
     nextRow++;
   }
   return nextRow;
 }
 
-int TextGui::updateSoilMessages(int nextRow) {
+int TextGui::updateMotorMessages(int nextRow) {
+  for (auto motor : motors) {
+    displayProgressBar(nextRow,
+                       "  Motor",
+                       motor->getName(),
+                       motor->getCurrentSpeedInPercentage());
+    nextRow++;
+  }
+  return nextRow;
+}
+
+int TextGui::updateLogicSoilMessages(int nextRow) {
+  for (auto measurement : soilMeasurements) {
+    displayProgressBar(nextRow,
+                       "MoistureMeasurement",
+                       measurement->getName(),
+                       measurement->getMoistureLevelInPercent());
+    nextRow++;
+  }
+  return nextRow;
+}
+
+int TextGui::updateSensorSoilMessages(int nextRow) {
   for (auto sensor : soilSensors) {
-    ostringstream stream;
-
-    const int moisturePercentage = sensor->getMoistureLevelInPercent();
-
-    const int PROGRESS_BAR_WIDTH = COLS - 50;
-    const int currentWidth = moisturePercentage / 100.0 * PROGRESS_BAR_WIDTH;
-
-    stream << "Soil moisture[" << sensor->getName() << "]: ";
-    stream << string(currentWidth, '=') << string(PROGRESS_BAR_WIDTH - currentWidth, ' ');
-    stream << "] " << std::setw(3) << std::setfill(' ') << moisturePercentage << '%';
-
-    mvwaddstr(dataWindow, nextRow, DATA_COLUMN, stream.str().c_str());
+    displayProgressBar(nextRow,
+                       "  MoistureSensor",
+                       sensor->getName(),
+                       sensor->getMoistureLevelInPercent());
     nextRow++;
   }
   return nextRow;
 }
+
+void TextGui::displayData(int row,
+                          const std::string& header,
+                          const std::string& name,
+                          const std::string& message) {
+  ostringstream stream;
+  stream << header << "[" << name << "]: ";
+  nameEndColumn = std::max(nameEndColumn, int(stream.str().size()));
+
+  const int nameFillSize = nameEndColumn - stream.str().size();
+  stream << string(nameFillSize, ' ');
+
+  int lineFillSize = COLS - nameEndColumn - nameFillSize - message.size() - 7;
+  stream << message << string(lineFillSize, ' ');
+
+  mvwaddstr(dataWindow, row, DATA_COLUMN, stream.str().c_str());
+}
+
+void TextGui::displayProgressBar(int row,
+                                 const std::string& header,
+                                 const std::string& name,
+                                 int progressInPercent) {
+  ostringstream stream;
+  stream << header << "[" << name << "]: ";
+
+  nameEndColumn = std::max(nameEndColumn, int(stream.str().size()));
+  const int nameFillSize = nameEndColumn - stream.str().size();
+  stream << string(nameFillSize, ' ');
+
+  const int UNIT_AND_VALUE_SIZE = 14;
+  const int totalBarWidth = COLS - nameEndColumn - UNIT_AND_VALUE_SIZE;
+  const int filledBarWidth = progressInPercent / 100.0 * totalBarWidth;
+  const int blankBarWidth = totalBarWidth - filledBarWidth;
+
+  stream << "[" << string(filledBarWidth, '=') << string(blankBarWidth, ' ');
+  stream << "] " << std::setw(3) << std::setfill(' ') << progressInPercent << '%';
+
+  mvwaddstr(dataWindow, row, DATA_COLUMN, stream.str().c_str());
+}
+
 
 } /* namespace ui */
 } /* namespace balcony_watering_system */
