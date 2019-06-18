@@ -31,9 +31,6 @@ HWFactory::~HWFactory() {
 }
 
 void HWFactory::create() {
-  for (const auto configuration : configurationFile.getPumpConfigurations()) {
-  }
-
   for (const auto simulationConfiguration : configurationFile.getSimulationConfigurations()) {
     for (const auto& name : simulationConfiguration->getMotors()) {
       motors.push_back(new SimulatedMotor(name));
