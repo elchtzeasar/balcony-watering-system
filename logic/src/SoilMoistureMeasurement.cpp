@@ -28,10 +28,10 @@ const string& SoilMoistureMeasurement::getName() const {
   return name;
 }
 
-int SoilMoistureMeasurement::getMoistureLevelInPercent() const {
+int SoilMoistureMeasurement::getMoistureInPercent() const {
   int percentage = 0;
   for (const auto& sensor : sensors) {
-    percentage = max(percentage, sensor->getMoistureLevelInPercent());
+    percentage = max(percentage, sensor->getMoistureInPercent());
   }
   return percentage;
 }

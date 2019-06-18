@@ -3,10 +3,23 @@ SoilMoistureMeasurement:
   name: box
   sensor: inner
   sensor: outer
+HumidityMeasurement:
+  name: box
+  sensor: humid
+TemperatureMeasurement:
+  name: box
+  sensor: therm
+VolumeMeasurement:
+  name: dunk
+  sensor: dist
+  area-in-m2: 0.2
 Pump:
   name: pump
   motor: ctrl
 Simulation:
   soil-sensor: outer
   soil-sensor: inner
+  humidity-sensor: humid
+  temperature-sensor: therm
+  distance-sensor: dist
   motor: ctrl

@@ -12,7 +12,7 @@ public:
 
   virtual const std::string& getName() const = 0;
 
-  virtual int getMoistureLevelInPercent() const = 0;
+  virtual int getMoistureInPercent() const = 0;
 };
 
 } /* namespace hardware */

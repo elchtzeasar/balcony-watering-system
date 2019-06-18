@@ -14,7 +14,10 @@ namespace balcony_watering_system {
 namespace hardware {
 
 class IMotorController;
+class IDistanceSensor;
+class IHumiditySensor;
 class ISoilMoistureSensor;
+class ITemperatureSensor;
 class Master;
 
 class HWFactory {
@@ -32,17 +35,36 @@ public:
   const IMotorController& getMotor(const std::string& name) const;
   const std::vector<IMotorController*>& getMotors();
   const std::vector<IMotorController*>& getMotors() const;
+
+  IDistanceSensor& getDistanceSensor(const std::string& name);
+  const IDistanceSensor& getDistanceSensor(const std::string& name) const;
+  const std::vector<IDistanceSensor*>& getDistanceSensors();
+  const std::vector<IDistanceSensor*>& getDistanceSensors() const;
+
+  IHumiditySensor& getHumiditySensor(const std::string& name);
+  const IHumiditySensor& getHumiditySensor(const std::string& name) const;
+  const std::vector<IHumiditySensor*>& getHumiditySensors();
+  const std::vector<IHumiditySensor*>& getHumiditySensors() const;
+
   ISoilMoistureSensor& getSoilMoistureSensor(const std::string& name);
   const ISoilMoistureSensor& getSoilMoistureSensor(const std::string& name) const;
   const std::vector<ISoilMoistureSensor*>& getSoilMoistureSensors();
   const std::vector<ISoilMoistureSensor*>& getSoilMoistureSensors() const;
+
+  ITemperatureSensor& getTemperatureSensor(const std::string& name);
+  const ITemperatureSensor& getTemperatureSensor(const std::string& name) const;
+  const std::vector<ITemperatureSensor*>& getTemperatureSensors();
+  const std::vector<ITemperatureSensor*>& getTemperatureSensors() const;
 
 private:
   const configuration::ConfigurationFile& configurationFile;
   Master& master;
 
   std::vector<IMotorController*> motors;
+  std::vector<IDistanceSensor*> distanceSensors;
+  std::vector<IHumiditySensor*> humiditySensors;
   std::vector<ISoilMoistureSensor*> soilMoistureSensors;
+  std::vector<ITemperatureSensor*> temperatureSensors;
 };
 
 } /* namespace hardware */

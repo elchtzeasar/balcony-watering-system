@@ -19,7 +19,7 @@ public:
   virtual const std::string& getName() const override;
 
   virtual void doSample() override;
-  virtual int getMoistureLevelInPercent() const override;
+  virtual int getMoistureInPercent() const override;
 
 private:
   const std::string name;

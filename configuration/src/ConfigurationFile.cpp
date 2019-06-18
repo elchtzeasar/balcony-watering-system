@@ -1,9 +1,12 @@
 #include "ConfigurationFile.h"
 
+#include "HumidityMeasurementConfiguration.h"
 #include "IConfiguration.h"
 #include "PumpConfiguration.h"
 #include "SimulationConfiguration.h"
 #include "SoilMoistureMeasurementConfiguration.h"
+#include "TemperatureMeasurementConfiguration.h"
+#include "VolumeMeasurementConfiguration.h"
 
 #include <cassert>
 #include <iostream>
@@ -62,6 +65,20 @@ const vector<IPumpConfiguration const *> ConfigurationFile::getPumpConfiguration
   return result;
 }
 
+const vector<IHumidityMeasurementConfiguration const *> ConfigurationFile::getHumidityMeasurementConfigurations() const {
+  vector<IHumidityMeasurementConfiguration const *> result;
+
+  for (const auto configuration : configurations) {
+    auto specializedConfiguration = dynamic_cast<IHumidityMeasurementConfiguration const*>(configuration);
+
+    if (specializedConfiguration) {
+      result.push_back(specializedConfiguration);
+    }
+  }
+
+  return result;
+}
+
 const vector<ISoilMoistureMeasurementConfiguration const *> ConfigurationFile::getSoilMoistureMeasurementConfigurations() const {
   vector<ISoilMoistureMeasurementConfiguration const *> result;
 
@@ -75,6 +92,35 @@ const vector<ISoilMoistureMeasurementConfiguration const *> ConfigurationFile::g
 
   return result;
 }
+
+const vector<ITemperatureMeasurementConfiguration const *> ConfigurationFile::getTemperatureMeasurementConfigurations() const {
+  vector<ITemperatureMeasurementConfiguration const *> result;
+
+  for (const auto configuration : configurations) {
+    auto specializedConfiguration = dynamic_cast<ITemperatureMeasurementConfiguration const*>(configuration);
+
+    if (specializedConfiguration) {
+      result.push_back(specializedConfiguration);
+    }
+  }
+
+  return result;
+}
+
+const std::vector<IVolumeMeasurementConfiguration const *> ConfigurationFile::getVolumeMeasurementConfigurations() const {
+  vector<IVolumeMeasurementConfiguration const *> result;
+
+  for (const auto configuration : configurations) {
+    auto specializedConfiguration = dynamic_cast<IVolumeMeasurementConfiguration const*>(configuration);
+
+    if (specializedConfiguration) {
+      result.push_back(specializedConfiguration);
+    }
+  }
+
+  return result;
+}
+
 
 const vector<ISimulationConfiguration const *> ConfigurationFile::getSimulationConfigurations() const {
   vector<ISimulationConfiguration const *> result;
@@ -161,8 +207,17 @@ ConfigurationFile::ConsumeResult ConfigurationFile::consume(
 }
 
 IConfiguration* ConfigurationFile::createConfiguration(const string& type) {
-  if (type == "SoilMoistureMeasurement") {
+  if (type == "HumidityMeasurement") {
+    return new HumidityMeasurementConfiguration();
+  }
+  else if (type == "SoilMoistureMeasurement") {
     return new SoilMoistureMeasurementConfiguration();
+  }
+  else if (type == "TemperatureMeasurement") {
+    return new TemperatureMeasurementConfiguration();
+  }
+  else if (type == "VolumeMeasurement") {
+    return new VolumeMeasurementConfiguration();
   }
   else if (type == "Pump") {
     return new PumpConfiguration();

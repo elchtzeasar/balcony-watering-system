@@ -1,4 +1,4 @@
-#include "SimulatedSoilMoistureSensor.h"
+#include "SimulatedHumiditySensor.h"
 
 #include "Master.h"
 
@@ -12,7 +12,7 @@ using ::std::chrono::milliseconds;
 using ::std::chrono::steady_clock;
 using ::std::string;
 
-SimulatedSoilMoistureSensor::SimulatedSoilMoistureSensor(
+SimulatedHumiditySensor::SimulatedHumiditySensor(
     const string& name, Master& master) :
   name(name),
   currentLevel(0),
@@ -25,13 +25,13 @@ SimulatedSoilMoistureSensor::SimulatedSoilMoistureSensor(
   increment = rd() % 5 - 3;
 }
 
-SimulatedSoilMoistureSensor::~SimulatedSoilMoistureSensor() {
+SimulatedHumiditySensor::~SimulatedHumiditySensor() {
 }
 
-const string& SimulatedSoilMoistureSensor::getName() const {
+const string& SimulatedHumiditySensor::getName() const {
   return name;
 }
-void SimulatedSoilMoistureSensor::doSample() {
+void SimulatedHumiditySensor::doSample() {
   const auto now = steady_clock::now();
   const auto timeSinceLastUpdate = duration_cast<milliseconds>(now - lastUpdate);
   if (timeSinceLastUpdate > milliseconds(500)) {
@@ -48,7 +48,7 @@ void SimulatedSoilMoistureSensor::doSample() {
   }
 }
 
-int SimulatedSoilMoistureSensor::getMoistureInPercent() const {
+int SimulatedHumiditySensor::getHumidityInPercent() const {
   return currentLevel;
 }
 

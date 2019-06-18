@@ -10,9 +10,12 @@ namespace balcony_watering_system {
 namespace configuration {
 
 class IConfiguration;
+class IHumidityMeasurementConfiguration;
 class IPumpConfiguration;
-class ISoilMoistureMeasurementConfiguration;
 class ISimulationConfiguration;
+class ISoilMoistureMeasurementConfiguration;
+class ITemperatureMeasurementConfiguration;
+class IVolumeMeasurementConfiguration;
 
 class ConfigurationFile {
 public:
@@ -24,9 +27,12 @@ public:
 
   void parse();
 
-  const std::vector<IPumpConfiguration const *> getPumpConfigurations() const;
+  const std::vector<IHumidityMeasurementConfiguration const *> getHumidityMeasurementConfigurations() const;
   const std::vector<ISoilMoistureMeasurementConfiguration const *>
   getSoilMoistureMeasurementConfigurations() const;
+  const std::vector<ITemperatureMeasurementConfiguration const *> getTemperatureMeasurementConfigurations() const;
+  const std::vector<IVolumeMeasurementConfiguration const *> getVolumeMeasurementConfigurations() const;
+  const std::vector<IPumpConfiguration const *> getPumpConfigurations() const;
   const std::vector<ISimulationConfiguration const *> getSimulationConfigurations() const;
 
 private:

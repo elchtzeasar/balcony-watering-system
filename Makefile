@@ -5,15 +5,24 @@ OBJS = \
   .target/main/BalconyWateringSystem.o \
   .target/configuration/ConfigurationFile.o \
   .target/configuration/SimulationConfiguration.o \
+  .target/configuration/VolumeMeasurementConfiguration.o \
+  .target/configuration/HumidityMeasurementConfiguration.o \
   .target/configuration/SoilMoistureMeasurementConfiguration.o \
+  .target/configuration/TemperatureMeasurementConfiguration.o \
   .target/configuration/PumpConfiguration.o \
   .target/hardware/HWFactory.o \
   .target/hardware/Master.o \
   .target/hardware/SimulatedMotor.o \
+  .target/hardware/SimulatedHumiditySensor.o \
   .target/hardware/SimulatedSoilMoistureSensor.o \
+  .target/hardware/SimulatedTemperatureSensor.o \
+  .target/hardware/SimulatedDistanceSensor.o \
   .target/logic/LogicFactory.o \
   .target/logic/Pump.o \
+  .target/logic/HumidityMeasurement.o \
   .target/logic/SoilMoistureMeasurement.o \
+  .target/logic/TemperatureMeasurement.o \
+  .target/logic/VolumeMeasurement.o \
   .target/ui/TextGui.o \
 
 CXXFLAGS += -std=c++17

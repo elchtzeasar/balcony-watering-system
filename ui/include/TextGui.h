@@ -9,13 +9,19 @@
 namespace balcony_watering_system::logic {
   class LogicFactory;
   class Pump;
+  class HumidityMeasurement;
   class SoilMoistureMeasurement;
+  class TemperatureMeasurement;
+  class VolumeMeasurement;
 }
 
 namespace balcony_watering_system::hardware {
   class HWFactory;
   class IMotorController;
+  class IDistanceSensor;
+  class IHumiditySensor;
   class ISoilMoistureSensor;
+  class ITemperatureSensor;
 }
 
 namespace balcony_watering_system {
@@ -32,8 +38,14 @@ public:
 private:
   int updatePumpMessages(int nextRow);
   int updateMotorMessages(int nextRow);
-  int updateLogicSoilMessages(int nextRow);
-  int updateSensorSoilMessages(int nextRow);
+  int updateSoilMeasurementMessages(int nextRow);
+  int updateSoilSensorMessages(int nextRow);
+  int updateHumidityMeasurementMessages(int nextRow);
+  int updateHumiditySensorMessages(int nextRow);
+  int updateTemperatureMeasurementMessages(int nextRow);
+  int updateTemperatureSensorMessages(int nextRow);
+  int updateVolumeMeasurementMessages(int nextRow);
+  int updateDistanceSensorMessages(int nextRow);
 
   void displayData(int row,
                    const std::string& header,
@@ -43,6 +55,20 @@ private:
                           const std::string& header,
                           const std::string& name,
                           int progressInPercent);
+  void displayProgressBar(int row,
+                          const std::string& header,
+                          const std::string& name,
+                          int min,
+                          int max,
+                          int value,
+                          const std::string& unit);
+  void displayProgressBar(int row,
+                          const std::string& header,
+                          const std::string& name,
+                          double min,
+                          double max,
+                          double value,
+                          const std::string& unit);
 
   void doStartPumps();
   void doStopPumps();
@@ -50,8 +76,14 @@ private:
   const std::vector<logic::Pump*> pumps;
   const std::vector<hardware::IMotorController*> motors;
 
+  const std::vector<logic::HumidityMeasurement*> humidityMeasurements;
+  const std::vector<hardware::IHumiditySensor*> humiditySensors;
   const std::vector<logic::SoilMoistureMeasurement*> soilMeasurements;
   const std::vector<hardware::ISoilMoistureSensor*> soilSensors;
+  const std::vector<logic::TemperatureMeasurement*> temperatureMeasurements;
+  const std::vector<hardware::ITemperatureSensor*> temperatureSensors;
+  const std::vector<logic::VolumeMeasurement*> volumeMeasurements;
+  const std::vector<hardware::IDistanceSensor*> distanceSensors;
 
   WINDOW* dataWindow;
   WINDOW* menuWindow;

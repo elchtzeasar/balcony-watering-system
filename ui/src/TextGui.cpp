@@ -1,13 +1,20 @@
 #include "TextGui.h"
 
 #include "IMotorController.h"
+#include "IDistanceSensor.h"
+#include "IHumiditySensor.h"
 #include "ISoilMoistureSensor.h"
+#include "ITemperatureSensor.h"
 #include "LogicFactory.h"
 #include "HWFactory.h"
 #include "Pump.h"
+#include "HumidityMeasurement.h"
 #include "SoilMoistureMeasurement.h"
+#include "TemperatureMeasurement.h"
+#include "VolumeMeasurement.h"
 
 #include <algorithm>
+#include <cmath>
 #include <iomanip>
 #include <sstream>
 #include <stdlib.h>
@@ -19,7 +26,9 @@ namespace ui {
 
 using ::balcony_watering_system::logic::LogicFactory;
 using ::balcony_watering_system::hardware::HWFactory;
+using ::std::ios;
 using ::std::ostringstream;
+using ::std::round;
 using ::std::string;
 using ::std::vector;
 
@@ -36,8 +45,14 @@ static const int FIRST_DATA_ROW = 2;
 TextGui::TextGui(const LogicFactory& logicFactory, const HWFactory& hwFactory) :
     pumps(logicFactory.getPumps()),
     motors(hwFactory.getMotors()),
+    humidityMeasurements(logicFactory.getHumidityMeasurements()),
+    humiditySensors(hwFactory.getHumiditySensors()),
     soilMeasurements(logicFactory.getSoilMoistureMeasurements()),
     soilSensors(hwFactory.getSoilMoistureSensors()),
+    temperatureMeasurements(logicFactory.getTemperatureMeasurements()),
+    temperatureSensors(hwFactory.getTemperatureSensors()),
+    volumeMeasurements(logicFactory.getVolumeMeasurements()),
+    distanceSensors(hwFactory.getDistanceSensors()),
     dataWindow(NULL),
     menuWindow(NULL),
     menu(NULL),
@@ -68,8 +83,14 @@ TextGui::TextGui(const LogicFactory& logicFactory, const HWFactory& hwFactory) :
 
   auto nextDataRow = updatePumpMessages(FIRST_DATA_ROW);
   nextDataRow = updateMotorMessages(nextDataRow);
-  nextDataRow = updateLogicSoilMessages(nextDataRow);
-  nextDataRow = updateSensorSoilMessages(nextDataRow);
+  nextDataRow = updateHumidityMeasurementMessages(nextDataRow);
+  nextDataRow = updateHumiditySensorMessages(nextDataRow);
+  nextDataRow = updateSoilMeasurementMessages(nextDataRow);
+  nextDataRow = updateSoilSensorMessages(nextDataRow);
+  nextDataRow = updateTemperatureMeasurementMessages(nextDataRow);
+  nextDataRow = updateTemperatureSensorMessages(nextDataRow);
+  nextDataRow = updateVolumeMeasurementMessages(nextDataRow);
+  nextDataRow = updateDistanceSensorMessages(nextDataRow);
 
   refresh();
   post_menu(menu);
@@ -121,8 +142,14 @@ bool TextGui::exec() {
 
   auto nextDataRow = updatePumpMessages(FIRST_DATA_ROW);
   nextDataRow = updateMotorMessages(nextDataRow);
-  nextDataRow = updateLogicSoilMessages(nextDataRow);
-  nextDataRow = updateSensorSoilMessages(nextDataRow);
+  nextDataRow = updateHumidityMeasurementMessages(nextDataRow);
+  nextDataRow = updateHumiditySensorMessages(nextDataRow);
+  nextDataRow = updateSoilMeasurementMessages(nextDataRow);
+  nextDataRow = updateSoilSensorMessages(nextDataRow);
+  nextDataRow = updateTemperatureMeasurementMessages(nextDataRow);
+  nextDataRow = updateTemperatureSensorMessages(nextDataRow);
+  nextDataRow = updateVolumeMeasurementMessages(nextDataRow);
+  nextDataRow = updateDistanceSensorMessages(nextDataRow);
 
   wrefresh(dataWindow);
 
@@ -162,23 +189,101 @@ int TextGui::updateMotorMessages(int nextRow) {
   return nextRow;
 }
 
-int TextGui::updateLogicSoilMessages(int nextRow) {
-  for (auto measurement : soilMeasurements) {
+int TextGui::updateHumidityMeasurementMessages(int nextRow) {
+  for (auto measurement : humidityMeasurements) {
     displayProgressBar(nextRow,
-                       "MoistureMeasurement",
+                       "HumidityMeasurement",
                        measurement->getName(),
-                       measurement->getMoistureLevelInPercent());
+                       measurement->getHumidityInPercent());
     nextRow++;
   }
   return nextRow;
 }
 
-int TextGui::updateSensorSoilMessages(int nextRow) {
+int TextGui::updateHumiditySensorMessages(int nextRow) {
+  for (auto sensor : humiditySensors) {
+    displayProgressBar(nextRow,
+                       "  HumiditySensor",
+                       sensor->getName(),
+                       sensor->getHumidityInPercent());
+    nextRow++;
+  }
+  return nextRow;
+}
+
+int TextGui::updateSoilMeasurementMessages(int nextRow) {
+  for (auto measurement : soilMeasurements) {
+    displayProgressBar(nextRow,
+                       "MoistureMeasurement",
+                       measurement->getName(),
+                       measurement->getMoistureInPercent());
+    nextRow++;
+  }
+  return nextRow;
+}
+
+int TextGui::updateSoilSensorMessages(int nextRow) {
   for (auto sensor : soilSensors) {
     displayProgressBar(nextRow,
                        "  MoistureSensor",
                        sensor->getName(),
-                       sensor->getMoistureLevelInPercent());
+                       sensor->getMoistureInPercent());
+    nextRow++;
+  }
+  return nextRow;
+}
+
+int TextGui::updateTemperatureMeasurementMessages(int nextRow) {
+  for (auto measurement : temperatureMeasurements) {
+    displayProgressBar(nextRow,
+                       "TemperatureMeasurement",
+                       measurement->getName(),
+                       measurement->getMin(),
+                       measurement->getMax(),
+                       measurement->getTemperatureInDegrees(),
+                       "C");
+    nextRow++;
+  }
+  return nextRow;
+}
+
+int TextGui::updateTemperatureSensorMessages(int nextRow) {
+  for (auto sensor : temperatureSensors) {
+    displayProgressBar(nextRow,
+                       "  TemperatureSensor",
+                       sensor->getName(),
+                       sensor->getMin(),
+                       sensor->getMax(),
+                       sensor->getTemperatureInDegrees(),
+                       "C");
+    nextRow++;
+  }
+  return nextRow;
+}
+
+int TextGui::updateVolumeMeasurementMessages(int nextRow) {
+  for (auto measurement : volumeMeasurements) {
+    displayProgressBar(nextRow,
+                       "VolumeMeasurement",
+                       measurement->getName(),
+                       measurement->getMin(),
+                       measurement->getMax(),
+                       measurement->getVolumeInLiters(),
+                       "l");
+    nextRow++;
+  }
+  return nextRow;
+}
+
+int TextGui::updateDistanceSensorMessages(int nextRow) {
+  for (auto sensor : distanceSensors) {
+    displayProgressBar(nextRow,
+                       "  DistanceSensor",
+                       sensor->getName(),
+                       sensor->getMin(),
+                       sensor->getMax(),
+                       sensor->getDistanceInMillimeters(),
+                       "mm");
     nextRow++;
   }
   return nextRow;
@@ -205,6 +310,18 @@ void TextGui::displayProgressBar(int row,
                                  const std::string& header,
                                  const std::string& name,
                                  int progressInPercent) {
+  displayProgressBar(row, header, name, 0, 100, progressInPercent, "%");
+}
+
+void TextGui::displayProgressBar(int row,
+                                 const std::string& header,
+                                 const std::string& name,
+                                 int min,
+                                 int max,
+                                 int value,
+                                 const std::string& unit) {
+  const int progressInPercent = round(100 * value / float(max - min));
+
   ostringstream stream;
   stream << header << "[" << name << "]: ";
 
@@ -212,17 +329,45 @@ void TextGui::displayProgressBar(int row,
   const int nameFillSize = nameEndColumn - stream.str().size();
   stream << string(nameFillSize, ' ');
 
-  const int UNIT_AND_VALUE_SIZE = 14;
+  const int UNIT_AND_VALUE_SIZE = 14 + unit.size();
   const int totalBarWidth = COLS - nameEndColumn - UNIT_AND_VALUE_SIZE;
   const int filledBarWidth = progressInPercent / 100.0 * totalBarWidth;
   const int blankBarWidth = totalBarWidth - filledBarWidth;
 
   stream << "[" << string(filledBarWidth, '=') << string(blankBarWidth, ' ');
-  stream << "] " << std::setw(3) << std::setfill(' ') << progressInPercent << '%';
+  stream << "] " << std::setw(3) << std::setfill(' ') << value << ' ' << unit;
 
   mvwaddstr(dataWindow, row, DATA_COLUMN, stream.str().c_str());
 }
 
+void TextGui::displayProgressBar(int row,
+                                 const std::string& header,
+                                 const std::string& name,
+                                 double min,
+                                 double max,
+                                 double value,
+                                 const std::string& unit) {
+  const int progressInPercent = round(100 * value / float(max - min));
+
+  ostringstream stream;
+  stream << header << "[" << name << "]: ";
+
+  nameEndColumn = std::max(nameEndColumn, int(stream.str().size()));
+  const int nameFillSize = nameEndColumn - stream.str().size();
+  stream << string(nameFillSize, ' ');
+
+  const int UNIT_AND_VALUE_SIZE = 17 + unit.size();
+  const int totalBarWidth = COLS - nameEndColumn - UNIT_AND_VALUE_SIZE;
+  const int filledBarWidth = progressInPercent / 100.0 * totalBarWidth;
+  const int blankBarWidth = totalBarWidth - filledBarWidth;
+
+  stream << "[" << string(filledBarWidth, '=') << string(blankBarWidth, ' ');
+  stream.setf(ios::fixed, ios::floatfield );
+  stream.precision(4);
+  stream << "] " << std::setw(2) << std::setfill('0') << value << ' ' << unit;
+
+  mvwaddstr(dataWindow, row, DATA_COLUMN, stream.str().c_str());
+}
 
 } /* namespace ui */
 } /* namespace balcony_watering_system */

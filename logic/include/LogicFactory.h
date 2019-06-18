@@ -15,7 +15,10 @@ namespace balcony_watering_system {
 namespace logic {
 
 class Pump;
+class HumidityMeasurement;
 class SoilMoistureMeasurement;
+class TemperatureMeasurement;
+class VolumeMeasurement;
 
 class LogicFactory {
 public:
@@ -30,15 +33,24 @@ public:
 
   const std::vector<Pump*>& getPumps();
   const std::vector<Pump*>& getPumps() const;
+  const std::vector<HumidityMeasurement*>& getHumidityMeasurements();
+  const std::vector<HumidityMeasurement*>& getHumidityMeasurements() const;
   const std::vector<SoilMoistureMeasurement*>& getSoilMoistureMeasurements();
   const std::vector<SoilMoistureMeasurement*>& getSoilMoistureMeasurements() const;
+  const std::vector<TemperatureMeasurement*>& getTemperatureMeasurements();
+  const std::vector<TemperatureMeasurement*>& getTemperatureMeasurements() const;
+  const std::vector<VolumeMeasurement*>& getVolumeMeasurements();
+  const std::vector<VolumeMeasurement*>& getVolumeMeasurements() const;
 
 private:
   const configuration::ConfigurationFile& configurationFile;
   hardware::HWFactory& hwFactory;
 
   std::vector<Pump*> pumps;
+  std::vector<HumidityMeasurement*> humidityMeasurements;
   std::vector<SoilMoistureMeasurement*> soilMoistureMeasurements;
+  std::vector<TemperatureMeasurement*> temperatureMeasurements;
+  std::vector<VolumeMeasurement*> volumeMeasurements;
 };
 
 } /* namespace logic */

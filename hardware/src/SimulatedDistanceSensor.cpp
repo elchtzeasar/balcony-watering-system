@@ -1,4 +1,4 @@
-#include "SimulatedSoilMoistureSensor.h"
+#include "SimulatedDistanceSensor.h"
 
 #include "Master.h"
 
@@ -12,7 +12,7 @@ using ::std::chrono::milliseconds;
 using ::std::chrono::steady_clock;
 using ::std::string;
 
-SimulatedSoilMoistureSensor::SimulatedSoilMoistureSensor(
+SimulatedDistanceSensor::SimulatedDistanceSensor(
     const string& name, Master& master) :
   name(name),
   currentLevel(0),
@@ -22,33 +22,41 @@ SimulatedSoilMoistureSensor::SimulatedSoilMoistureSensor(
 
   static std::random_device rd;
   currentLevel = rd() % 100;
-  increment = rd() % 5 - 3;
+  increment = rd() % 11 - 5;
 }
 
-SimulatedSoilMoistureSensor::~SimulatedSoilMoistureSensor() {
+SimulatedDistanceSensor::~SimulatedDistanceSensor() {
 }
 
-const string& SimulatedSoilMoistureSensor::getName() const {
+const string& SimulatedDistanceSensor::getName() const {
   return name;
 }
-void SimulatedSoilMoistureSensor::doSample() {
+void SimulatedDistanceSensor::doSample() {
   const auto now = steady_clock::now();
   const auto timeSinceLastUpdate = duration_cast<milliseconds>(now - lastUpdate);
   if (timeSinceLastUpdate > milliseconds(500)) {
     currentLevel += increment;
   }
 
-  if (currentLevel > 100) {
-    currentLevel = 100;
+  if (currentLevel > getMax()) {
+    currentLevel = getMax();
     increment *= -1;
   }
-  else if (currentLevel < 0) {
-    currentLevel = 0;
+  else if (currentLevel < getMin()) {
+    currentLevel = getMin();
     increment *= -1;
   }
 }
 
-int SimulatedSoilMoistureSensor::getMoistureInPercent() const {
+int SimulatedDistanceSensor::getMin() const {
+  return 0;
+}
+
+int SimulatedDistanceSensor::getMax() const {
+  return 1000;
+}
+
+int SimulatedDistanceSensor::getDistanceInMillimeters() const {
   return currentLevel;
 }
 

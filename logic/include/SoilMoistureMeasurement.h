@@ -23,7 +23,7 @@ public:
 
   const std::string& getName() const;
 
-  int getMoistureLevelInPercent() const;
+  int getMoistureInPercent() const;
 
 private:
   const std::string name;
