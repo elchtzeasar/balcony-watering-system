@@ -36,6 +36,21 @@ LogicFactory::LogicFactory(const ConfigurationFile& configurationFile,
 }
 
 LogicFactory::~LogicFactory() {
+  for (auto pump : pumps) {
+    delete pump;
+  }
+  for (auto measurement : humidityMeasurements) {
+    delete measurement;
+  }
+  for (auto measurement : soilMoistureMeasurements) {
+    delete measurement;
+  }
+  for (auto measurement : temperatureMeasurements) {
+    delete measurement;
+  }
+  for (auto measurement : volumeMeasurements) {
+    delete measurement;
+  }
 }
 
 void LogicFactory::create() {

@@ -28,6 +28,21 @@ HWFactory::HWFactory(const ConfigurationFile& configurationFile,
 }
 
 HWFactory::~HWFactory() {
+  for (auto motor : motors) {
+    delete motor;
+  }
+  for (auto sensor : distanceSensors) {
+    delete sensor;
+  }
+  for (auto sensor : humiditySensors) {
+    delete sensor;
+  }
+  for (auto sensor : soilMoistureSensors) {
+    delete sensor;
+  }
+  for (auto sensor : temperatureSensors) {
+    delete sensor;
+  }
 }
 
 void HWFactory::create() {
