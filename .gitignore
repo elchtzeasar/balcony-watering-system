@@ -1,3 +1,10 @@
 build
 bin
 .target
+CMakeFiles
+CMakeCache.txt
+*.cmake
+*~
+Makefile
+*.a
+main/BalconyWateringSystem
