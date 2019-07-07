@@ -16,3 +16,5 @@ target_link_libraries (BalconyWateringSystem LINK_PUBLIC
   hardware
   logic
   ui)
+
+install (TARGETS BalconyWateringSystem DESTINATION bin)
