@@ -8,3 +8,4 @@ Makefile
 *.a
 main/BalconyWateringSystem
 install_manifest.txt
+*#*
