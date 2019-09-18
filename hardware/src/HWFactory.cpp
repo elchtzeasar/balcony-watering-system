@@ -1,7 +1,9 @@
 #include "HWFactory.h"
 
 #include "ConfigurationFile.h"
+#include "ISi7021SensorConfiguration.h"
 #include "ISimulationConfiguration.h"
+#include "Si7021Sensor.h"
 #include "SimulatedMotor.h"
 #include "SimulatedDistanceSensor.h"
 #include "SimulatedHumiditySensor.h"
@@ -62,6 +64,11 @@ void HWFactory::create() {
     for (const auto& name : simulationConfiguration->getTemperatureSensors()) {
       temperatureSensors.push_back(new SimulatedTemperatureSensor(name, master));
     }
+  }
+  for (const auto& sensorConfiguration : configurationFile.getSi7021SensorConfigurations()) {
+    auto sensor = new Si7021Sensor(sensorConfiguration->getName(), master);
+    temperatureSensors.push_back(sensor);
+    humiditySensors.push_back(sensor);
   }
 }
 

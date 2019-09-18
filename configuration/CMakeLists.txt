@@ -5,6 +5,7 @@ add_library (configuration
   src/PumpConfiguration.cpp
   src/TemperatureMeasurementConfiguration.cpp
   src/VolumeMeasurementConfiguration.cpp
+  src/Si7021SensorConfiguration.cpp
   src/SimulationConfiguration.cpp
   src/SoilMoistureMeasurementConfiguration.cpp
   src/HumidityMeasurementConfiguration.cpp

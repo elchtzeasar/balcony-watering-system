@@ -3,6 +3,7 @@
 #include "HumidityMeasurementConfiguration.h"
 #include "IConfiguration.h"
 #include "PumpConfiguration.h"
+#include "Si7021SensorConfiguration.h"
 #include "SimulationConfiguration.h"
 #include "SoilMoistureMeasurementConfiguration.h"
 #include "TemperatureMeasurementConfiguration.h"
@@ -121,12 +122,25 @@ const std::vector<IVolumeMeasurementConfiguration const *> ConfigurationFile::ge
   return result;
 }
 
-
 const vector<ISimulationConfiguration const *> ConfigurationFile::getSimulationConfigurations() const {
   vector<ISimulationConfiguration const *> result;
 
   for (const auto configuration : configurations) {
     auto specializedConfiguration = dynamic_cast<ISimulationConfiguration const*>(configuration);
+
+    if (specializedConfiguration) {
+      result.push_back(specializedConfiguration);
+    }
+  }
+
+  return result;
+}
+
+const vector<ISi7021SensorConfiguration const *> ConfigurationFile::getSi7021SensorConfigurations() const {
+  vector<ISi7021SensorConfiguration const *> result;
+
+  for (const auto configuration : configurations) {
+    auto specializedConfiguration = dynamic_cast<ISi7021SensorConfiguration const*>(configuration);
 
     if (specializedConfiguration) {
       result.push_back(specializedConfiguration);
@@ -224,6 +238,9 @@ IConfiguration* ConfigurationFile::createConfiguration(const string& type) {
   }
   else if (type == "Simulation") {
     return new SimulationConfiguration();
+  }
+  else if (type == "Si7021Sensor") {
+    return new Si7021SensorConfiguration();
   }
   assert(false && "unknown type");
   return nullptr;

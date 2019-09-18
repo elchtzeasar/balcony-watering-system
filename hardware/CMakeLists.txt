@@ -8,5 +8,6 @@ add_library (hardware
   src/SimulatedSoilMoistureSensor.cpp
   src/SimulatedMotor.cpp
   src/SimulatedDistanceSensor.cpp
+  src/Si7021Sensor.cpp
   src/Master.cpp
   )

@@ -6,6 +6,8 @@ include_directories (${PROJECT_SOURCE_DIR}/logic/include)
 include_directories (${PROJECT_SOURCE_DIR}/ui/include)
 
 add_library (main src/BalconyWateringSystem.cpp)
+include_directories (${PROJECT_SOURCE_DIR}/../boost.di/include/)
+
 
 add_executable (BalconyWateringSystem src/main.cpp)
 

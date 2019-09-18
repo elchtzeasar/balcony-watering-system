@@ -1,12 +1,14 @@
 #ifndef HARDWARE_INCLUDE_IHUMIDITYSENSOR_H_
 #define HARDWARE_INCLUDE_IHUMIDITYSENSOR_H_
 
+#include "ISensor.h"
+
 #include <string>
 
 namespace balcony_watering_system {
 namespace hardware {
 
-class IHumiditySensor {
+class IHumiditySensor : public virtual ISensor {
 public:
   virtual ~IHumiditySensor() = default;
 

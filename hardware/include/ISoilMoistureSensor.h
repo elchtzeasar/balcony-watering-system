@@ -1,16 +1,16 @@
 #ifndef HARDWARE_INCLUDE_ISOILMOISTURESENSOR_H_
 #define HARDWARE_INCLUDE_ISOILMOISTURESENSOR_H_
 
+#include "ISensor.h"
+
 #include <string>
 
 namespace balcony_watering_system {
 namespace hardware {
 
-class ISoilMoistureSensor {
+class ISoilMoistureSensor : public virtual ISensor {
 public:
   virtual ~ISoilMoistureSensor() = default;
-
-  virtual const std::string& getName() const = 0;
 
   virtual int getMoistureInPercent() const = 0;
 };

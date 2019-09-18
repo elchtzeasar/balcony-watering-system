@@ -13,6 +13,7 @@ class IConfiguration;
 class IHumidityMeasurementConfiguration;
 class IPumpConfiguration;
 class ISimulationConfiguration;
+class ISi7021SensorConfiguration;
 class ISoilMoistureMeasurementConfiguration;
 class ITemperatureMeasurementConfiguration;
 class IVolumeMeasurementConfiguration;
@@ -33,7 +34,10 @@ public:
   const std::vector<ITemperatureMeasurementConfiguration const *> getTemperatureMeasurementConfigurations() const;
   const std::vector<IVolumeMeasurementConfiguration const *> getVolumeMeasurementConfigurations() const;
   const std::vector<IPumpConfiguration const *> getPumpConfigurations() const;
+
   const std::vector<ISimulationConfiguration const *> getSimulationConfigurations() const;
+
+  const std::vector<ISi7021SensorConfiguration const *> getSi7021SensorConfigurations() const;
 
 private:
   enum class ParseState { NONE, EXPECTING_TYPE, TYPE_RECEIVED, EXPECTING_KEY, EXPECTING_VALUE };

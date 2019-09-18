@@ -20,6 +20,8 @@ Simulation:
   soil-sensor: outer
   soil-sensor: inner
   humidity-sensor: humid
-  temperature-sensor: therm
+  #temperature-sensor: therm
   distance-sensor: dist
   motor: ctrl
+Si7021Sensor:
+  name: therm
