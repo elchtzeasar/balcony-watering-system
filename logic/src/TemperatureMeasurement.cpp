@@ -29,16 +29,16 @@ const string& TemperatureMeasurement::getName() const {
   return name;
 }
 
-int TemperatureMeasurement::getMin() const {
+float TemperatureMeasurement::getMin() const {
   return 0;
 }
 
-int TemperatureMeasurement::getMax() const {
+float TemperatureMeasurement::getMax() const {
   return 40;
 }
 
-int TemperatureMeasurement::getTemperatureInDegrees() const {
-  int temperature = 0;
+float TemperatureMeasurement::getTemperatureInDegrees() const {
+  float temperature = 0;
   for (const auto& sensor : sensors) {
     temperature = max(temperature, sensor->getTemperatureInDegrees());
   }

@@ -316,6 +316,13 @@ void TextGui::displayProgressBar(int row,
 void TextGui::displayProgressBar(int row,
                                  const std::string& header,
                                  const std::string& name,
+                                 float progressInPercent) {
+  displayProgressBar(row, header, name, 0.0f, 100.0f, progressInPercent, "%");
+}
+
+void TextGui::displayProgressBar(int row,
+                                 const std::string& header,
+                                 const std::string& name,
                                  int min,
                                  int max,
                                  int value,
@@ -343,9 +350,9 @@ void TextGui::displayProgressBar(int row,
 void TextGui::displayProgressBar(int row,
                                  const std::string& header,
                                  const std::string& name,
-                                 double min,
-                                 double max,
-                                 double value,
+                                 float min,
+                                 float max,
+                                 float value,
                                  const std::string& unit) {
   const int progressInPercent = round(100 * value / float(max - min));
 

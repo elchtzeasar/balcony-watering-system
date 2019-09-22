@@ -19,14 +19,14 @@ public:
   virtual const std::string& getName() const override;
 
   virtual void doSample() override;
-  virtual int getHumidityInPercent() const override;
+  virtual float getHumidityInPercent() const override;
 
 private:
   const std::string name;
 
   std::chrono::steady_clock::time_point lastUpdate;
   int increment;
-  int currentLevel;
+  float currentLevel;
 };
 
 } /* namespace hardware */

@@ -23,7 +23,7 @@ public:
 
   const std::string& getName() const;
 
-  int getHumidityInPercent() const;
+  float getHumidityInPercent() const;
 
 private:
   const std::string name;

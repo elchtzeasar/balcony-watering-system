@@ -14,7 +14,7 @@ public:
 
   virtual const std::string& getName() const = 0;
 
-  virtual int getHumidityInPercent() const = 0;
+  virtual float getHumidityInPercent() const = 0;
 };
 
 } /* namespace hardware */

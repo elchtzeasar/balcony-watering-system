@@ -14,9 +14,9 @@ public:
 
   virtual const std::string& getName() const = 0;
 
-  virtual int getMin() const = 0;
-  virtual int getMax() const = 0;
-  virtual int getTemperatureInDegrees() const = 0;
+  virtual float getMin() const = 0;
+  virtual float getMax() const = 0;
+  virtual float getTemperatureInDegrees() const = 0;
 };
 
 } /* namespace hardware */

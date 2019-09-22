@@ -21,6 +21,19 @@ using ::std::endl;
 using ::std::strerror;
 using ::std::string;
 
+enum Commands {
+  MEASURE_RELATIVE_HUMIDITY_HOLD_MASTER = 0xE5,
+  MEASURE_RELATIVE_HUMIDITY_NO_HOLD_MASTER = 0xF5,
+  MEASURE_TEMPERATURE_HOLD_MASTER = 0xE3,
+  MEASURE_TEMPERATURE_NO_HOLD_MASTER = 0xF3,
+  READ_TEMPERATURE_FROM_PREVIOUS_TEMPERATURE_MEASUREMENT = 0xE0,
+  RESET = 0xFE,
+  WRITE_USER_REGISTER_1 = 0xE6,
+  READ_USER_REGISTER_1 = 0xE7,
+  WRITE_HEATER_CONTROL_REGISTER = 0x51,
+  READ_HEATER_CONTROL_REGISTER = 0x11,
+};
+
 Si7021Sensor::Si7021Sensor(const string& name, Master& master) :
   name(name),
   temperatureInDegrees(0),
@@ -46,62 +59,54 @@ void Si7021Sensor::doSample() {
   // Get I2C device, SI7021 I2C address is 0x40(64)
   ioctl(file, I2C_SLAVE, 0x40);
 
-  // Send humidity measurement command(0xF5)
-  char command = 0xF5;
+  uint8_t command = MEASURE_RELATIVE_HUMIDITY_NO_HOLD_MASTER;
   write(file, &command, sizeof(command));
-  sleep(1);
 
   // Read 2 bytes of humidity data
   // humidity msb, humidity lsb
-  constexpr size_t data_size = 2;
-  char data[data_size] = {0};
-  if (read(file, data, data_size) != data_size) {
-    cerr << "Error : Input/output Error" << std::endl;
-  }
-  else {
-    const uint16_t msb = data[0];
-    const uint16_t lsb = data[1];
-    const uint16_t data = msb << 8 | lsb;
-    const float humidity = data * 125 / 65536.0 - 6;
+  constexpr size_t expectedDataSize = 2;
+  uint8_t data[expectedDataSize] = {0};
+  size_t actualDataSize = 0;
+  do {
+    actualDataSize = read(file, data, expectedDataSize);
+  } while (actualDataSize != expectedDataSize);
 
-    humidityInPercent = round(humidity);
-  }
+  const uint16_t msb = data[0];
+  const uint16_t lsb = data[1];
+  const uint16_t sensorWord = msb << 8 | lsb;
+  const float humidity = sensorWord * 125 / 65536.0 - 6;
 
-  // Send temperature measurement command(0xF3)
-  command = 0xF3;
+  humidityInPercent = humidity;
+
+  command = READ_TEMPERATURE_FROM_PREVIOUS_TEMPERATURE_MEASUREMENT;
   write(file, &command, sizeof(command));
-  sleep(1);
 
-  // Read 2 bytes of temperature data
-  // temp msb, temp lsb
-  if(read(file, data, data_size) != data_size) {
+  if(read(file, data, expectedDataSize) != expectedDataSize) {
     cerr << "Error : Input/output Error" << endl;
   }
   else {
     const uint16_t msb = data[0];
     const uint16_t lsb = data[1];
-    const uint16_t data = msb << 8 | lsb;
-    float temperature = (data * 175.72) / 65536.0 - 46.85;
+    const uint16_t sensorWord = msb << 8 | lsb;
+    float temperature = (sensorWord * 175.72) / 65536.0 - 46.85;
 
-    // Output data to screen
-    //cout << ", temperature=" << temperature << " C" << endl;
     temperatureInDegrees = temperature;
   }
 }
 
-int Si7021Sensor::getMin() const {
+float Si7021Sensor::getMin() const {
   return 0;
 }
 
-int Si7021Sensor::getMax() const {
+float Si7021Sensor::getMax() const {
   return 100;
 }
 
-int Si7021Sensor::getTemperatureInDegrees() const {
+float Si7021Sensor::getTemperatureInDegrees() const {
   return temperatureInDegrees;
 }
 
-int Si7021Sensor::getHumidityInPercent() const {
+float Si7021Sensor::getHumidityInPercent() const {
   return humidityInPercent;
 }
 

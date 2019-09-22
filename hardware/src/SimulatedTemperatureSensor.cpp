@@ -48,15 +48,15 @@ void SimulatedTemperatureSensor::doSample() {
   }
 }
 
-int SimulatedTemperatureSensor::getMin() const {
+float SimulatedTemperatureSensor::getMin() const {
   return 0;
 }
 
-int SimulatedTemperatureSensor::getMax() const {
+float SimulatedTemperatureSensor::getMax() const {
   return 100;
 }
 
-int SimulatedTemperatureSensor::getTemperatureInDegrees() const {
+float SimulatedTemperatureSensor::getTemperatureInDegrees() const {
   return currentLevel;
 }
 

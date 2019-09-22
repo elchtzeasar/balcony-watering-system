@@ -48,7 +48,7 @@ void SimulatedHumiditySensor::doSample() {
   }
 }
 
-int SimulatedHumiditySensor::getHumidityInPercent() const {
+float SimulatedHumiditySensor::getHumidityInPercent() const {
   return currentLevel;
 }
 

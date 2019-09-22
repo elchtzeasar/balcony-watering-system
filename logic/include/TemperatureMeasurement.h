@@ -23,9 +23,9 @@ public:
 
   const std::string& getName() const;
 
-  int getMin() const;
-  int getMax() const;
-  int getTemperatureInDegrees() const;
+  float getMin() const;
+  float getMax() const;
+  float getTemperatureInDegrees() const;
 
 private:
   const std::string name;

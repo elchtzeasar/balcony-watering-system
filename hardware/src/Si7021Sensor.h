@@ -19,17 +19,17 @@ class Si7021Sensor : public IReadNode, public ITemperatureSensor, public IHumidi
 
   virtual void doSample() override;
 
-  virtual int getMin() const override;
-  virtual int getMax() const override;
-  virtual int getTemperatureInDegrees() const override;
+  virtual float getMin() const override;
+  virtual float getMax() const override;
+  virtual float getTemperatureInDegrees() const override;
 
-  virtual int getHumidityInPercent() const override;
+  virtual float getHumidityInPercent() const override;
 
  private:
   const std::string name;
 
-  int temperatureInDegrees;
-  int humidityInPercent;
+  float temperatureInDegrees;
+  float humidityInPercent;
 };
 
 } /* namespace hardware */

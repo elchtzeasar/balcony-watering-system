@@ -29,21 +29,21 @@ const string& VolumeMeasurement::getName() const {
   return name;
 }
 
-double VolumeMeasurement::getMin() const {
-  const double distanceInMeters = sensor.getMin() / 1000.0;
-  const double volume = areaInSquareMeters * distanceInMeters;
+float VolumeMeasurement::getMin() const {
+  const float distanceInMeters = sensor.getMin() / 1000.0;
+  const float volume = areaInSquareMeters * distanceInMeters;
   return volume;
 }
 
-double VolumeMeasurement::getMax() const {
-  const double distanceInMeters = sensor.getMax() / 1000.0;
-  const double volume = areaInSquareMeters * distanceInMeters;
+float VolumeMeasurement::getMax() const {
+  const float distanceInMeters = sensor.getMax() / 1000.0;
+  const float volume = areaInSquareMeters * distanceInMeters;
   return volume;
 }
 
-double VolumeMeasurement::getVolumeInLiters() const {
-  const double distanceInMeters = sensor.getDistanceInMillimeters() / 1000.0;
-  const double volume = areaInSquareMeters * distanceInMeters;
+float VolumeMeasurement::getVolumeInLiters() const {
+  const float distanceInMeters = sensor.getDistanceInMillimeters() / 1000.0;
+  const float volume = areaInSquareMeters * distanceInMeters;
   return volume;
 }
 

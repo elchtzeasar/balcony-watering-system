@@ -28,8 +28,8 @@ const string& HumidityMeasurement::getName() const {
   return name;
 }
 
-int HumidityMeasurement::getHumidityInPercent() const {
-  int percentage = 0;
+float HumidityMeasurement::getHumidityInPercent() const {
+  float percentage = 0;
   for (const auto& sensor : sensors) {
     percentage = max(percentage, sensor->getHumidityInPercent());
   }

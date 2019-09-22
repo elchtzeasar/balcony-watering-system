@@ -58,6 +58,10 @@ private:
   void displayProgressBar(int row,
                           const std::string& header,
                           const std::string& name,
+                          float progressInPercent);
+  void displayProgressBar(int row,
+                          const std::string& header,
+                          const std::string& name,
                           int min,
                           int max,
                           int value,
@@ -65,9 +69,9 @@ private:
   void displayProgressBar(int row,
                           const std::string& header,
                           const std::string& name,
-                          double min,
-                          double max,
-                          double value,
+                          float min,
+                          float max,
+                          float value,
                           const std::string& unit);
 
   void doStartPumps();

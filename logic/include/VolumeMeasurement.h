@@ -23,9 +23,9 @@ public:
 
   const std::string& getName() const;
 
-  double getMin() const;
-  double getMax() const;
-  double getVolumeInLiters() const;
+  float getMin() const;
+  float getMax() const;
+  float getVolumeInLiters() const;
 
 private:
   const std::string name;
