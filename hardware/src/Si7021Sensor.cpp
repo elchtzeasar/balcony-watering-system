@@ -5,13 +5,8 @@
 #include <cerrno>
 #include <cmath>
 #include <cstring>
-#include <fcntl.h>
 #include <iostream>
-#include <linux/i2c-dev.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
 
 namespace balcony_watering_system {
 namespace hardware {
@@ -36,6 +31,7 @@ enum Commands {
 
 Si7021Sensor::Si7021Sensor(const string& name, Master& master) :
   name(name),
+  master(master),
   temperatureInDegrees(0),
   humidityInPercent(0) {
   master.registerReadNode(*this);
@@ -49,26 +45,15 @@ const string& Si7021Sensor::getName() const {
 }
 
 void Si7021Sensor::doSample() {
-  // Create I2C bus
-  const char* bus = "/dev/i2c-1";
-  const int file = open(bus, O_RDWR);
-  if (file < 0) {
-    cerr << "Failed to open the bus: " << strerror(errno) << endl;
-    exit(1);
-  }
-  // Get I2C device, SI7021 I2C address is 0x40(64)
-  ioctl(file, I2C_SLAVE, 0x40);
+  master.setNodeAddress(0x40);
 
-  uint8_t command = MEASURE_RELATIVE_HUMIDITY_NO_HOLD_MASTER;
-  write(file, &command, sizeof(command));
+  master.writeData(MEASURE_RELATIVE_HUMIDITY_NO_HOLD_MASTER);
 
-  // Read 2 bytes of humidity data
-  // humidity msb, humidity lsb
   constexpr size_t expectedDataSize = 2;
   uint8_t data[expectedDataSize] = {0};
   size_t actualDataSize = 0;
   do {
-    actualDataSize = read(file, data, expectedDataSize);
+    actualDataSize = master.readData(data, expectedDataSize);
   } while (actualDataSize != expectedDataSize);
 
   const uint16_t msb = data[0];
@@ -78,10 +63,9 @@ void Si7021Sensor::doSample() {
 
   humidityInPercent = humidity;
 
-  command = READ_TEMPERATURE_FROM_PREVIOUS_TEMPERATURE_MEASUREMENT;
-  write(file, &command, sizeof(command));
+  master.writeData(READ_TEMPERATURE_FROM_PREVIOUS_TEMPERATURE_MEASUREMENT);
 
-  if(read(file, data, expectedDataSize) != expectedDataSize) {
+  if (master.readData(data, expectedDataSize) != expectedDataSize) {
     cerr << "Error : Input/output Error" << endl;
   }
   else {

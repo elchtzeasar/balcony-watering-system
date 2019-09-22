@@ -2,6 +2,8 @@
 #define HARDWARE_SRC_MASTER_H_
 
 #include <vector>
+#include <stddef.h>
+#include <stdint.h>
 
 namespace balcony_watering_system {
 namespace hardware {
@@ -17,12 +19,19 @@ public:
   void registerReadNode(IReadNode& node);
   void registerWriteNode(IWriteNode& node);
 
+  void setNodeAddress(uint8_t address);
+  void writeData(const uint8_t data);
+  void writeData(uint8_t const* data, size_t size);
+  int readData(uint8_t* data, size_t size);
+
   void doSampleNodes();
   void doControlNodes();
 
 private:
   std::vector<IReadNode*> readNodes;
   std::vector<IWriteNode*> writeNodes;
+
+  const int fd;
 };
 
 } /* namespace hardware */

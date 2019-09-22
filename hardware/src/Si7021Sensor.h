@@ -27,6 +27,7 @@ class Si7021Sensor : public IReadNode, public ITemperatureSensor, public IHumidi
 
  private:
   const std::string name;
+  Master& master;
 
   float temperatureInDegrees;
   float humidityInPercent;
