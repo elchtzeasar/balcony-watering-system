@@ -1,8 +1,10 @@
 #include "HWFactory.h"
 
 #include "ConfigurationFile.h"
+#include "IADS1015Configuration.h"
 #include "ISi7021SensorConfiguration.h"
 #include "ISimulationConfiguration.h"
+#include "ADS1015.h"
 #include "Si7021Sensor.h"
 #include "SimulatedMotor.h"
 #include "SimulatedDistanceSensor.h"
@@ -10,12 +12,16 @@
 #include "SimulatedSoilMoistureSensor.h"
 #include "SimulatedTemperatureSensor.h"
 
+#include <algorithm>
 #include <cassert>
+#include <iterator>
 
 namespace balcony_watering_system {
 namespace hardware {
 
 using ::balcony_watering_system::configuration::ConfigurationFile;
+using ::std::back_inserter;
+using ::std::transform;
 
 HWFactory::HWFactory(const ConfigurationFile& configurationFile,
                      Master& master) :
@@ -25,8 +31,9 @@ HWFactory::HWFactory(const ConfigurationFile& configurationFile,
   distanceSensors(),
   humiditySensors(),
   soilMoistureSensors(),
-  temperatureSensors() {
-
+  temperatureSensors(),
+  circuits(),
+  analogInputs() {
 }
 
 HWFactory::~HWFactory() {
@@ -44,6 +51,9 @@ HWFactory::~HWFactory() {
   }
   for (auto sensor : temperatureSensors) {
     delete sensor;
+  }
+  for (auto circuit : circuits) {
+    delete circuit;
   }
 }
 
@@ -65,10 +75,17 @@ void HWFactory::create() {
       temperatureSensors.push_back(new SimulatedTemperatureSensor(name, master));
     }
   }
-  for (const auto& sensorConfiguration : configurationFile.getSi7021SensorConfigurations()) {
-    auto sensor = new Si7021Sensor(sensorConfiguration->getName(), master);
+  for (const auto& configuration : configurationFile.getSi7021SensorConfigurations()) {
+    auto sensor = new Si7021Sensor(configuration->getName(), master);
     temperatureSensors.push_back(sensor);
     humiditySensors.push_back(sensor);
+  }
+  for (const auto& configuration : configurationFile.getADS1015Configurations()) {
+    auto circuit = new ADS1015(configuration->getNamePrefix(), master);
+    circuits.push_back(circuit);
+    const auto& sensorInputs = circuit->getAnalogInputs();
+    transform(sensorInputs.begin(), sensorInputs.end(), back_inserter(analogInputs),
+        [](const AnalogInput& input) -> IAnalogInput const* { return &input; });
   }
 }
 
@@ -210,6 +227,23 @@ const std::vector<IHumiditySensor*>& HWFactory::getHumiditySensors() {
 
 const std::vector<IHumiditySensor*>& HWFactory::getHumiditySensors() const {
   return humiditySensors;
+}
+const IAnalogInput& HWFactory::getAnalogInput(const std::string& name) const {
+  for (auto input : analogInputs) {
+    if (input->getName() == name) {
+      return *input;
+    }
+  }
+
+  assert(false && "could not find sensor");
+}
+
+const std::vector<IAnalogInput const*>& HWFactory::getAnalogInputs() {
+  return analogInputs;
+}
+
+const std::vector<IAnalogInput const*>& HWFactory::getAnalogInputs() const {
+  return analogInputs;
 }
 
 } /* namespace hardware */

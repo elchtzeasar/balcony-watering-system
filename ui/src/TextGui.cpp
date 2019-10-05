@@ -1,5 +1,6 @@
 #include "TextGui.h"
 
+#include "IAnalogInput.h"
 #include "IMotorController.h"
 #include "IDistanceSensor.h"
 #include "IHumiditySensor.h"
@@ -53,6 +54,7 @@ TextGui::TextGui(const LogicFactory& logicFactory, const HWFactory& hwFactory) :
     temperatureSensors(hwFactory.getTemperatureSensors()),
     volumeMeasurements(logicFactory.getVolumeMeasurements()),
     distanceSensors(hwFactory.getDistanceSensors()),
+    analogInputs(hwFactory.getAnalogInputs()),
     dataWindow(NULL),
     menuWindow(NULL),
     menu(NULL),
@@ -150,6 +152,7 @@ bool TextGui::exec() {
   nextDataRow = updateTemperatureSensorMessages(nextDataRow);
   nextDataRow = updateVolumeMeasurementMessages(nextDataRow);
   nextDataRow = updateDistanceSensorMessages(nextDataRow);
+  nextDataRow = updateAnalogInputMessages(nextDataRow);
 
   wrefresh(dataWindow);
 
@@ -289,6 +292,20 @@ int TextGui::updateDistanceSensorMessages(int nextRow) {
   return nextRow;
 }
 
+int TextGui::updateAnalogInputMessages(int nextRow) {
+  for (auto input : analogInputs) {
+    displayProgressBar(nextRow,
+                       "  AnalogInput",
+                       input->getName(),
+                       input->getMin(),
+                       input->getMax(),
+                       input->getCurrentVoltage(),
+                       "V");
+    nextRow++;
+  }
+  return nextRow;
+}
+
 void TextGui::displayData(int row,
                           const std::string& header,
                           const std::string& name,
@@ -354,7 +371,7 @@ void TextGui::displayProgressBar(int row,
                                  float max,
                                  float value,
                                  const std::string& unit) {
-  const int progressInPercent = round(100 * value / float(max - min));
+  const float progressInPercent = 100 * value / float(max - min);
 
   ostringstream stream;
   stream << header << "[" << name << "]: ";
@@ -365,7 +382,7 @@ void TextGui::displayProgressBar(int row,
 
   const int UNIT_AND_VALUE_SIZE = 17 + unit.size();
   const int totalBarWidth = COLS - nameEndColumn - UNIT_AND_VALUE_SIZE;
-  const int filledBarWidth = progressInPercent / 100.0 * totalBarWidth;
+  const int filledBarWidth = round(progressInPercent / 100.0 * totalBarWidth);
   const int blankBarWidth = totalBarWidth - filledBarWidth;
 
   stream << "[" << string(filledBarWidth, '=') << string(blankBarWidth, ' ');

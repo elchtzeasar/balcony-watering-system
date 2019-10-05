@@ -9,5 +9,6 @@ add_library (configuration
   src/SimulationConfiguration.cpp
   src/SoilMoistureMeasurementConfiguration.cpp
   src/HumidityMeasurementConfiguration.cpp
+  src/ADS1015Configuration.cpp
   src/ConfigurationFile.cpp
   )

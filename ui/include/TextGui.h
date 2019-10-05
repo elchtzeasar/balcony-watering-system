@@ -22,6 +22,7 @@ namespace balcony_watering_system::hardware {
   class IHumiditySensor;
   class ISoilMoistureSensor;
   class ITemperatureSensor;
+  class IAnalogInput;
 }
 
 namespace balcony_watering_system {
@@ -46,6 +47,7 @@ private:
   int updateTemperatureSensorMessages(int nextRow);
   int updateVolumeMeasurementMessages(int nextRow);
   int updateDistanceSensorMessages(int nextRow);
+  int updateAnalogInputMessages(int nextRow);
 
   void displayData(int row,
                    const std::string& header,
@@ -88,6 +90,7 @@ private:
   const std::vector<hardware::ITemperatureSensor*> temperatureSensors;
   const std::vector<logic::VolumeMeasurement*> volumeMeasurements;
   const std::vector<hardware::IDistanceSensor*> distanceSensors;
+  const std::vector<hardware::IAnalogInput const*> analogInputs;
 
   WINDOW* dataWindow;
   WINDOW* menuWindow;

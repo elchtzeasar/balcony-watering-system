@@ -25,3 +25,5 @@ Simulation:
   motor: ctrl
 Si7021Sensor:
   name: therm
+ADS1015:
+  name-prefix: analog

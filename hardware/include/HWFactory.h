@@ -13,9 +13,11 @@ class ConfigurationFile;
 namespace balcony_watering_system {
 namespace hardware {
 
-class IMotorController;
+class IAnalogInput;
 class IDistanceSensor;
 class IHumiditySensor;
+class IMotorController;
+class IReadNode;
 class ISoilMoistureSensor;
 class ITemperatureSensor;
 class Master;
@@ -56,6 +58,10 @@ public:
   const std::vector<ITemperatureSensor*>& getTemperatureSensors();
   const std::vector<ITemperatureSensor*>& getTemperatureSensors() const;
 
+  const IAnalogInput& getAnalogInput(const std::string& name) const;
+  const std::vector<IAnalogInput const*>& getAnalogInputs();
+  const std::vector<IAnalogInput const*>& getAnalogInputs() const;
+
 private:
   const configuration::ConfigurationFile& configurationFile;
   Master& master;
@@ -65,6 +71,8 @@ private:
   std::vector<IHumiditySensor*> humiditySensors;
   std::vector<ISoilMoistureSensor*> soilMoistureSensors;
   std::vector<ITemperatureSensor*> temperatureSensors;
+  std::vector<IReadNode*> circuits;
+  std::vector<IAnalogInput const*> analogInputs;
 };
 
 } /* namespace hardware */

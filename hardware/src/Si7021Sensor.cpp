@@ -47,7 +47,7 @@ const string& Si7021Sensor::getName() const {
 void Si7021Sensor::doSample() {
   master.setNodeAddress(0x40);
 
-  master.writeData(MEASURE_RELATIVE_HUMIDITY_NO_HOLD_MASTER);
+  master.writeData(uint8_t{MEASURE_RELATIVE_HUMIDITY_NO_HOLD_MASTER});
 
   constexpr size_t expectedDataSize = 2;
   uint8_t data[expectedDataSize] = {0};
@@ -63,7 +63,7 @@ void Si7021Sensor::doSample() {
 
   humidityInPercent = humidity;
 
-  master.writeData(READ_TEMPERATURE_FROM_PREVIOUS_TEMPERATURE_MEASUREMENT);
+  master.writeData(uint8_t{READ_TEMPERATURE_FROM_PREVIOUS_TEMPERATURE_MEASUREMENT});
 
   if (master.readData(data, expectedDataSize) != expectedDataSize) {
     cerr << "Error : Input/output Error" << endl;

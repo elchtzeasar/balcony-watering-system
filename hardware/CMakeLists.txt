@@ -9,5 +9,7 @@ add_library (hardware
   src/SimulatedMotor.cpp
   src/SimulatedDistanceSensor.cpp
   src/Si7021Sensor.cpp
+  src/ADS1015.cpp
+  src/AnalogInput.cpp
   src/Master.cpp
   )
