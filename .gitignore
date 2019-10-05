@@ -9,3 +9,4 @@ Makefile
 main/BalconyWateringSystem
 install_manifest.txt
 *#*
+.settings/*

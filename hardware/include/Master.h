@@ -20,7 +20,7 @@ public:
   void registerWriteNode(IWriteNode& node);
 
   void setNodeAddress(uint8_t address);
-  void writeData(const uint8_t data);
+  void writeByte(const uint8_t data);
   void writeData(uint8_t const* data, size_t size);
   int readData(uint8_t* data, size_t size);
 

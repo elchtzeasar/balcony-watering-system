@@ -121,7 +121,7 @@ void ADS1015::doSample() {
     } while (!dataReady);
 
     master.setNodeAddress(0x48);
-    master.writeData(uint8_t{CONVERSION_REGISTER});
+    master.writeByte(uint8_t{CONVERSION_REGISTER});
     usleep(10000);
 
     constexpr size_t expectedDataSize = 2;

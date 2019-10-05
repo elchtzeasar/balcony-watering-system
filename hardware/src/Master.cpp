@@ -49,7 +49,7 @@ void Master::setNodeAddress(uint8_t address) {
   ioctl(fd, I2C_SLAVE, address);
 }
 
-void Master::writeData(const uint8_t data) {
+void Master::writeByte(const uint8_t data) {
   write(fd, &data, sizeof(data));
 }
 
