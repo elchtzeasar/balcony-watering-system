@@ -312,12 +312,12 @@ void TextGui::displayData(int row,
                           const std::string& message) {
   ostringstream stream;
   stream << header << "[" << name << "]: ";
-  nameEndColumn = std::max(nameEndColumn, int(stream.str().size()));
+  nameEndColumn = std::max<int>(nameEndColumn, int(stream.str().size()));
 
-  const int nameFillSize = nameEndColumn - stream.str().size();
+  const int nameFillSize = max<int>(0, nameEndColumn - stream.str().size());
   stream << string(nameFillSize, ' ');
 
-  int lineFillSize = COLS - nameEndColumn - nameFillSize - message.size() - 7;
+  const int lineFillSize = max<int>(0, COLS - nameEndColumn - nameFillSize - message.size() - 7);
   stream << message << string(lineFillSize, ' ');
 
   mvwaddstr(dataWindow, row, DATA_COLUMN, stream.str().c_str());
@@ -340,23 +340,23 @@ void TextGui::displayProgressBar(int row,
 void TextGui::displayProgressBar(int row,
                                  const std::string& header,
                                  const std::string& name,
-                                 int min,
-                                 int max,
+                                 int minValue,
+                                 int maxValue,
                                  int value,
                                  const std::string& unit) {
-  const int progressInPercent = round(100 * value / float(max - min));
+  const int progressInPercent = round(100 * value / float(maxValue - minValue));
 
   ostringstream stream;
   stream << header << "[" << name << "]: ";
 
-  nameEndColumn = std::max(nameEndColumn, int(stream.str().size()));
-  const int nameFillSize = nameEndColumn - stream.str().size();
+  nameEndColumn = max<int>(nameEndColumn, int(stream.str().size()));
+  const int nameFillSize = max<int>(0, nameEndColumn - stream.str().size());
   stream << string(nameFillSize, ' ');
 
   const int UNIT_AND_VALUE_SIZE = 14 + unit.size();
-  const int totalBarWidth = COLS - nameEndColumn - UNIT_AND_VALUE_SIZE;
-  const int filledBarWidth = progressInPercent / 100.0 * totalBarWidth;
-  const int blankBarWidth = totalBarWidth - filledBarWidth;
+  const int totalBarWidth = max<int>(0, COLS - nameEndColumn - UNIT_AND_VALUE_SIZE);
+  const int filledBarWidth = max<int>(0, progressInPercent / 100.0 * totalBarWidth);
+  const int blankBarWidth = max<int>(0, totalBarWidth - filledBarWidth);
 
   stream << "[" << string(filledBarWidth, '=') << string(blankBarWidth, ' ');
   stream << "] " << std::setw(3) << std::setfill(' ') << value << ' ' << unit;
@@ -367,23 +367,23 @@ void TextGui::displayProgressBar(int row,
 void TextGui::displayProgressBar(int row,
                                  const std::string& header,
                                  const std::string& name,
-                                 float min,
-                                 float max,
+                                 float minValue,
+                                 float maxValue,
                                  float value,
                                  const std::string& unit) {
-  const float progressInPercent = 100 * value / float(max - min);
+  const float progressInPercent = 100 * value / float(maxValue - minValue);
 
   ostringstream stream;
   stream << header << "[" << name << "]: ";
 
-  nameEndColumn = std::max(nameEndColumn, int(stream.str().size()));
-  const int nameFillSize = nameEndColumn - stream.str().size();
+  nameEndColumn = max<int>(nameEndColumn, int(stream.str().size()));
+  const int nameFillSize = max<int>(0, nameEndColumn - stream.str().size());
   stream << string(nameFillSize, ' ');
 
   const int UNIT_AND_VALUE_SIZE = 17 + unit.size();
-  const int totalBarWidth = COLS - nameEndColumn - UNIT_AND_VALUE_SIZE;
-  const int filledBarWidth = round(progressInPercent / 100.0 * totalBarWidth);
-  const int blankBarWidth = totalBarWidth - filledBarWidth;
+  const int totalBarWidth = max<int>(0, COLS - nameEndColumn - UNIT_AND_VALUE_SIZE);
+  const int filledBarWidth = max<int>(0, round(progressInPercent / 100.0 * totalBarWidth));
+  const int blankBarWidth = max<int>(0, totalBarWidth - filledBarWidth);
 
   stream << "[" << string(filledBarWidth, '=') << string(blankBarWidth, ' ');
   stream.setf(ios::fixed, ios::floatfield );
