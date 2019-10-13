@@ -8,6 +8,7 @@
 namespace balcony_watering_system {
 namespace hardware {
 
+class IAdapterNode;
 class IReadNode;
 class IWriteNode;
 
@@ -18,6 +19,7 @@ public:
 
   void registerReadNode(IReadNode& node);
   void registerWriteNode(IWriteNode& node);
+  void registerAdapterNode(IAdapterNode& node);
 
   void setNodeAddress(uint8_t address);
   void writeByte(const uint8_t data);
@@ -30,6 +32,7 @@ public:
 private:
   std::vector<IReadNode*> readNodes;
   std::vector<IWriteNode*> writeNodes;
+  std::vector<IAdapterNode*> adapterNodes;
 
   const int fd;
 };

@@ -28,6 +28,7 @@ namespace ui {
 using ::balcony_watering_system::logic::LogicFactory;
 using ::balcony_watering_system::hardware::HWFactory;
 using ::std::ios;
+using ::std::max;
 using ::std::ostringstream;
 using ::std::round;
 using ::std::string;

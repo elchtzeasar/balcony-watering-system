@@ -2,6 +2,7 @@
 
 #include "ADS1015Configuration.h"
 #include "HumidityMeasurementConfiguration.h"
+#include "GroveSoilMoistureSensorConfiguration.h"
 #include "IConfiguration.h"
 #include "PumpConfiguration.h"
 #include "Si7021SensorConfiguration.h"
@@ -151,6 +152,20 @@ const vector<ISi7021SensorConfiguration const *> ConfigurationFile::getSi7021Sen
   return result;
 }
 
+const vector<IAnalogSoilMoistureSensorConfiguration const *> ConfigurationFile::getAnalogSoilMoistureSensors() const {
+  vector<IAnalogSoilMoistureSensorConfiguration const *> result;
+
+  for (const auto configuration : configurations) {
+    auto specializedConfiguration = dynamic_cast<IAnalogSoilMoistureSensorConfiguration const*>(configuration);
+
+    if (specializedConfiguration) {
+      result.push_back(specializedConfiguration);
+    }
+  }
+
+  return result;
+}
+
 const vector<IADS1015Configuration const *> ConfigurationFile::getADS1015Configurations() const {
   vector<IADS1015Configuration const *> result;
 
@@ -256,6 +271,9 @@ IConfiguration* ConfigurationFile::createConfiguration(const string& type) {
   }
   else if (type == "Si7021Sensor") {
     return new Si7021SensorConfiguration();
+  }
+  else if (type == "GroveSoilMoistureSensor") {
+    return new GroveSoilMoistureSensorConfiguration();
   }
   else if (type == "ADS1015") {
     return new ADS1015Configuration();

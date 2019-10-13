@@ -10,6 +10,7 @@ namespace balcony_watering_system {
 namespace configuration {
 
 class IADS1015Configuration;
+class IAnalogSoilMoistureSensorConfiguration;
 class IConfiguration;
 class IHumidityMeasurementConfiguration;
 class IPumpConfiguration;
@@ -39,6 +40,7 @@ public:
   const std::vector<ISimulationConfiguration const *> getSimulationConfigurations() const;
 
   const std::vector<ISi7021SensorConfiguration const *> getSi7021SensorConfigurations() const;
+  const std::vector<IAnalogSoilMoistureSensorConfiguration const *> getAnalogSoilMoistureSensors() const;
   const std::vector<IADS1015Configuration const *> getADS1015Configurations() const;
 
 private:

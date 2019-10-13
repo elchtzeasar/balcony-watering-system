@@ -1,5 +1,6 @@
 #include "Master.h"
 
+#include "IAdapterNode.h"
 #include "IReadNode.h"
 #include "IWriteNode.h"
 
@@ -19,7 +20,7 @@ using ::std::endl;
 
 int openDevice();
 
-Master::Master() : readNodes(), writeNodes(), fd(openDevice()) {
+Master::Master() : readNodes(), writeNodes(), adapterNodes(), fd(openDevice()) {
 }
 
 Master::~Master() {
@@ -32,6 +33,10 @@ void Master::registerReadNode(IReadNode& node) {
 
 void Master::registerWriteNode(IWriteNode& node) {
   writeNodes.push_back(&node);
+}
+
+void Master::registerAdapterNode(IAdapterNode& node) {
+  adapterNodes.push_back(&node);
 }
 
 int openDevice() {
@@ -63,6 +68,9 @@ int Master::readData(uint8_t *data, size_t size) {
 
 void Master::doSampleNodes() {
   for (auto node : readNodes) {
+    node->doSample();
+  }
+  for (auto node : adapterNodes) {
     node->doSample();
   }
 }

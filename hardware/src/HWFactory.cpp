@@ -2,9 +2,11 @@
 
 #include "ConfigurationFile.h"
 #include "IADS1015Configuration.h"
+#include "IAnalogSoilMoistureSensorConfiguration.h"
 #include "ISi7021SensorConfiguration.h"
 #include "ISimulationConfiguration.h"
 #include "ADS1015.h"
+#include "AnalogSoilMoistureSensor.h"
 #include "Si7021Sensor.h"
 #include "SimulatedMotor.h"
 #include "SimulatedDistanceSensor.h"
@@ -86,6 +88,15 @@ void HWFactory::create() {
     const auto& sensorInputs = circuit->getAnalogInputs();
     transform(sensorInputs.begin(), sensorInputs.end(), back_inserter(analogInputs),
         [](const AnalogInput& input) -> IAnalogInput const* { return &input; });
+  }
+  for (const auto& configuration : configurationFile.getAnalogSoilMoistureSensors()) {
+    const auto& analogInput = getAnalogInput(configuration->getInputName());
+    auto sensor = new AnalogSoilMoistureSensor(configuration->getName(),
+                                               configuration->getWaterVoltage(),
+                                               configuration->getDryVoltage(),
+                                               analogInput,
+                                               master);
+    soilMoistureSensors.push_back(sensor);
   }
 }
 

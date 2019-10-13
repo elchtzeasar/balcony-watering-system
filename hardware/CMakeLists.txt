@@ -11,5 +11,6 @@ add_library (hardware
   src/Si7021Sensor.cpp
   src/ADS1015.cpp
   src/AnalogInput.cpp
+  src/AnalogSoilMoistureSensor.cpp
   src/Master.cpp
   )

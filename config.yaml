@@ -1,8 +1,7 @@
 ---
 SoilMoistureMeasurement:
   name: box
-  sensor: inner
-  sensor: outer
+  sensor: soilmoisture1
 HumidityMeasurement:
   name: box
   sensor: humid
@@ -27,3 +26,9 @@ Si7021Sensor:
   name: therm
 ADS1015:
   name-prefix: analog
+GroveSoilMoistureSensor:
+  name: soilmoisture1
+  input-name: analog.2
+  water-voltage: 2.4
+  dry-voltage: 3.6
+
