@@ -4,6 +4,8 @@
 #include "IAdapterNode.h"
 #include "ISoilMoistureSensor.h"
 
+#include "Logger.h"
+
 namespace balcony_watering_system {
 namespace hardware {
 
@@ -32,6 +34,8 @@ private:
   const IAnalogInput& analogInput;
 
   float currentPercentage;
+
+  const platform::Logger logger;
 };
 
 } /* namespace hardware */

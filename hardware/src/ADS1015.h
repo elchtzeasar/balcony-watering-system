@@ -4,6 +4,8 @@
 #include "IReadNode.h"
 #include "AnalogInput.h"
 
+#include "Logger.h"
+
 #include <vector>
 
 namespace balcony_watering_system {
@@ -24,6 +26,8 @@ class ADS1015 : public IReadNode {
   Master& master;
 
   std::vector<AnalogInput> analogInputs;
+
+  const platform::Logger logger;
 };
 
 } /* namespace hardware */

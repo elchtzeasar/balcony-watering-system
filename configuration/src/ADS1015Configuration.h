@@ -4,6 +4,8 @@
 #include "IConfiguration.h"
 #include "IADS1015Configuration.h"
 
+#include "Logger.h"
+
 namespace balcony_watering_system {
 namespace configuration {
 
@@ -17,6 +19,7 @@ public:
   virtual const std::string& getNamePrefix() const override;
 
 private:
+  const platform::Logger logger;
   std::string namePrefix;
 };
 

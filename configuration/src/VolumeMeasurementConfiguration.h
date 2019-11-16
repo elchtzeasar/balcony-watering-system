@@ -4,6 +4,7 @@
 #include "IConfiguration.h"
 #include "IVolumeMeasurementConfiguration.h"
 
+#include "Logger.h"
 namespace balcony_watering_system {
 namespace configuration {
 
@@ -22,6 +23,8 @@ private:
   std::string name;
   std::string sensor;
   double areaInSquareMeters;
+
+  const platform::Logger logger;
 };
 
 } /* namespace configuration */

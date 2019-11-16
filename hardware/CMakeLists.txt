@@ -1,5 +1,7 @@
-include_directories (${PROJECT_SOURCE_DIR}/configuration/include)
 include_directories (${PROJECT_SOURCE_DIR}/hardware/include)
+
+include_directories (${PROJECT_SOURCE_DIR}/platform/include)
+include_directories (${PROJECT_SOURCE_DIR}/configuration/include)
 
 add_library (hardware
   src/SimulatedHumiditySensor.cpp

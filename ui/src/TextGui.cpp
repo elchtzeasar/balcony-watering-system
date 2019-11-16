@@ -60,7 +60,8 @@ TextGui::TextGui(const LogicFactory& logicFactory, const HWFactory& hwFactory) :
     menuWindow(NULL),
     menu(NULL),
     menuItems(NULL),
-    nameEndColumn(0) {
+    nameEndColumn(0),
+    logger("text.gui") {
   initscr();
   noecho();
 
@@ -316,12 +317,25 @@ void TextGui::displayData(int row,
   nameEndColumn = std::max<int>(nameEndColumn, int(stream.str().size()));
 
   const int nameFillSize = max<int>(0, nameEndColumn - stream.str().size());
-  stream << string(nameFillSize, ' ');
+  const string nameFill(nameFillSize, ' ');
+  stream << nameFill;
 
   const int lineFillSize = max<int>(0, COLS - nameEndColumn - nameFillSize - message.size() - 7);
-  stream << message << string(lineFillSize, ' ');
+  const string lineFill(lineFillSize, ' ');
+  stream << message << lineFill;
 
-  mvwaddstr(dataWindow, row, DATA_COLUMN, stream.str().c_str());
+  const string line = stream.str();
+  mvwaddstr(dataWindow, row, DATA_COLUMN, line.c_str());
+
+  LOG_DEBUG(logger, "displayData[msg] - row=" << row
+      << ", header=" << header
+      << ", name=" << name
+      << ", message=" << message
+      << " => nameFillSize=" << nameFillSize
+      << ", lineFillSize=" << lineFillSize
+      << " => nameFill='" << nameFill << "'"
+      << "', lineFill='" << lineFill << "'"
+      << " => line=" << line);
 }
 
 void TextGui::displayProgressBar(int row,
@@ -345,24 +359,43 @@ void TextGui::displayProgressBar(int row,
                                  int maxValue,
                                  int value,
                                  const std::string& unit) {
-  const int progressInPercent = round(100 * value / float(maxValue - minValue));
+  const int progressInPercent = round(100 * (value - minValue) / float(maxValue - minValue));
 
   ostringstream stream;
   stream << header << "[" << name << "]: ";
 
   nameEndColumn = max<int>(nameEndColumn, int(stream.str().size()));
   const int nameFillSize = max<int>(0, nameEndColumn - stream.str().size());
-  stream << string(nameFillSize, ' ');
+  const string nameFill(nameFillSize, ' ');
+  stream << nameFill;
 
   const int UNIT_AND_VALUE_SIZE = 14 + unit.size();
   const int totalBarWidth = max<int>(0, COLS - nameEndColumn - UNIT_AND_VALUE_SIZE);
   const int filledBarWidth = max<int>(0, progressInPercent / 100.0 * totalBarWidth);
   const int blankBarWidth = max<int>(0, totalBarWidth - filledBarWidth);
 
-  stream << "[" << string(filledBarWidth, '=') << string(blankBarWidth, ' ');
-  stream << "] " << std::setw(3) << std::setfill(' ') << value << ' ' << unit;
+  const string barFill = string(filledBarWidth, '=');
+  const string blankBarFill = string(blankBarWidth, ' ');
+  stream << "[" << barFill << blankBarFill << "] ";
+  stream << std::setw(3) << std::setfill(' ') << value << ' ' << unit;
 
-  mvwaddstr(dataWindow, row, DATA_COLUMN, stream.str().c_str());
+  const string line = stream.str();
+  mvwaddstr(dataWindow, row, DATA_COLUMN, line.c_str());
+
+  LOG_DEBUG(logger, "displayData[int] - row=" << row
+      << ", header=" << header
+      << ", name=" << name
+      << ", minValue=" << minValue
+      << ", maxValue=" << maxValue
+      << ", value=" << value
+      << " => progressInPercent=" << progressInPercent
+      << " => totalBarWidth=" << totalBarWidth
+      << ", filledBarWidth=" << filledBarWidth
+      << ", blankBarWidth=" << blankBarWidth
+      << " => nameFill='" << nameFill << "'"
+      << "', barFill='" << barFill << "'"
+      << "', blankBarFill='" << blankBarFill << "'"
+      << " => line=" << line);
 }
 
 void TextGui::displayProgressBar(int row,
@@ -372,26 +405,46 @@ void TextGui::displayProgressBar(int row,
                                  float maxValue,
                                  float value,
                                  const std::string& unit) {
-  const float progressInPercent = 100 * value / float(maxValue - minValue);
+  const float progressInPercent = 100 * (value - minValue) / float(maxValue - minValue);
 
   ostringstream stream;
   stream << header << "[" << name << "]: ";
 
   nameEndColumn = max<int>(nameEndColumn, int(stream.str().size()));
   const int nameFillSize = max<int>(0, nameEndColumn - stream.str().size());
-  stream << string(nameFillSize, ' ');
+  const string nameFill(nameFillSize, ' ');
+  stream << nameFill;
 
   const int UNIT_AND_VALUE_SIZE = 17 + unit.size();
   const int totalBarWidth = max<int>(0, COLS - nameEndColumn - UNIT_AND_VALUE_SIZE);
   const int filledBarWidth = max<int>(0, round(progressInPercent / 100.0 * totalBarWidth));
   const int blankBarWidth = max<int>(0, totalBarWidth - filledBarWidth);
+  const string barFill(filledBarWidth, '=');
+  const string blankBarFill(blankBarWidth, ' ');
+  stream << "[" << barFill << blankBarFill << "] ";
 
-  stream << "[" << string(filledBarWidth, '=') << string(blankBarWidth, ' ');
   stream.setf(ios::fixed, ios::floatfield );
   stream.precision(4);
-  stream << "] " << std::setw(2) << std::setfill('0') << value << ' ' << unit;
+  stream << std::setw(2) << std::setfill('0') << value << ' ' << unit;
 
-  mvwaddstr(dataWindow, row, DATA_COLUMN, stream.str().c_str());
+  const string line = stream.str();
+  mvwaddstr(dataWindow, row, DATA_COLUMN, line.c_str());
+
+
+  LOG_DEBUG(logger, "displayData[float] - row=" << row
+      << ", header=" << header
+      << ", name=" << name
+      << ", minValue=" << minValue
+      << ", maxValue=" << maxValue
+      << ", value=" << value
+      << " => progressInPercent=" << progressInPercent
+      << " => totalBarWidth=" << totalBarWidth
+      << ", filledBarWidth=" << filledBarWidth
+      << ", blankBarWidth=" << blankBarWidth
+      << " => nameFill='" << nameFill << "'"
+      << "', barFill='" << barFill << "'"
+      << "', blankBarFill='" << blankBarFill << "'"
+      << " => line=" << line);
 }
 
 } /* namespace ui */

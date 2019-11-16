@@ -3,6 +3,8 @@
 
 #include "IAnalogInput.h"
 
+#include "Logger.h"
+
 namespace balcony_watering_system {
 namespace hardware {
 
@@ -23,6 +25,8 @@ private:
   const float min;
   const float max;
   float currentVoltage;
+
+  const platform::Logger logger;
 };
 
 } /* namespace hardware */

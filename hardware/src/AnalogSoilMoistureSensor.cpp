@@ -21,8 +21,11 @@ AnalogSoilMoistureSensor::AnalogSoilMoistureSensor(const string& name,
   waterVoltageInVolts(waterVoltageInVolts),
   dryVoltageInVolts(dryVoltageInVolts),
   analogInput(analogInput),
-  currentPercentage(0) {
+  currentPercentage(0),
+  logger("hardware.analog-soil-sensor", name) {
   master.registerAdapterNode(*this);
+  LOG_INFO(logger, "created with - waterVoltageInVolts=" << waterVoltageInVolts
+      << ", dryVoltageInVolts=" << dryVoltageInVolts);
 }
 
 AnalogSoilMoistureSensor::~AnalogSoilMoistureSensor() {
@@ -39,6 +42,11 @@ void AnalogSoilMoistureSensor::doSample() {
   const float currentMoistureFactor = 1 - currentDryFactor;
 
   currentPercentage = max<float>(0, min<float>(100, currentMoistureFactor * 100.0));
+
+  LOG_DEBUG(logger, "doSample - currentVoltage=" << currentVoltage
+      << " => currentDryFactor=" << currentDryFactor
+      << ", currentMoistureFactor=" << currentMoistureFactor
+      << " => currentPercentage=" << currentPercentage);
 }
 
 int AnalogSoilMoistureSensor::getMoistureInPercent() const {

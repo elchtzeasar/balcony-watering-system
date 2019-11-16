@@ -5,7 +5,7 @@
 namespace balcony_watering_system {
 namespace configuration {
 
-PumpConfiguration::PumpConfiguration() {
+PumpConfiguration::PumpConfiguration() : logger("logic.pump.configuration") {
 }
 
 PumpConfiguration::~PumpConfiguration() {
@@ -15,9 +15,11 @@ void PumpConfiguration::setField(
     const std::string& fieldName, const std::string& value) {
   if (fieldName == "name") {
     name = value;
+    LOG_DEBUG(logger, "fieldName=" << fieldName << ", value=" << value << " => name=" << name);
   }
   else if (fieldName == "motor") {
     motor = value;
+    LOG_DEBUG(logger, "fieldName=" << fieldName << ", value=" << value << " => motor=" << motor);
   }
   else {
     assert(false && "unknown field");
@@ -30,7 +32,7 @@ const std::string& PumpConfiguration::getName() const {
 }
 
 const std::string& PumpConfiguration::getMotor() const {
-  assert(motor != "" && "name must be set");
+  assert(motor != "" && "motor must be set");
   return motor;
 }
 

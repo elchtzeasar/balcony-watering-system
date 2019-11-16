@@ -33,7 +33,8 @@ Si7021Sensor::Si7021Sensor(const string& name, Master& master) :
   name(name),
   master(master),
   temperatureInDegrees(0),
-  humidityInPercent(0) {
+  humidityInPercent(0),
+  logger("hardware.si7021", name) {
   master.registerReadNode(*this);
 }
 
@@ -63,6 +64,10 @@ void Si7021Sensor::doSample() {
 
   humidityInPercent = humidity;
 
+  LOG_DEBUG(logger, "doSample[humidity] - msb=0x" << std::hex << msb << ", lsb=0x" << lsb
+      << " => sensorWord=0x" << sensorWord
+      << " => humidity=" << std::dec << humidity);
+
   master.writeByte(uint8_t{READ_TEMPERATURE_FROM_PREVIOUS_TEMPERATURE_MEASUREMENT});
 
   if (master.readData(data, expectedDataSize) != expectedDataSize) {
@@ -75,6 +80,10 @@ void Si7021Sensor::doSample() {
     float temperature = (sensorWord * 175.72) / 65536.0 - 46.85;
 
     temperatureInDegrees = temperature;
+
+    LOG_DEBUG(logger, "doSample[temperature] - msb=0x" << std::hex << msb << ", lsb=0x" << lsb
+        << " => sensorWord=0x" << sensorWord
+        << " => temperatureInDegrees=" << std::dec << temperatureInDegrees);
   }
 }
 

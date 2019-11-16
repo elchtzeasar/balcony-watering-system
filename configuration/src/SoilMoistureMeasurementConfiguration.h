@@ -4,6 +4,7 @@
 #include "IConfiguration.h"
 #include "ISoilMoistureMeasurementConfiguration.h"
 
+#include "Logger.h"
 namespace balcony_watering_system {
 namespace configuration {
 
@@ -20,6 +21,8 @@ public:
 private:
   std::string name;
   std::vector<std::string> sensors;
+
+  const platform::Logger logger;
 };
 
 } /* namespace configuration */

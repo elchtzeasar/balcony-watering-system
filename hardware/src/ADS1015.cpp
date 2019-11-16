@@ -77,7 +77,8 @@ const uint16_t DEFAULT_COMMAND =
 
 ADS1015::ADS1015(const string& namePrefix, Master& master) :
   master(master),
-  analogInputs() {
+  analogInputs(),
+  logger("hardware.ads1015", namePrefix) {
   master.registerReadNode(*this);
 
   for (int i = 0; i < 4; i++) {
@@ -139,6 +140,14 @@ void ADS1015::doSample() {
     const float voltage = voltageWord / float(0x7ff0) * VDD;
 
     analogInputs.at(i).setCurrentVoltage(voltage);
+
+    LOG_TRACE(logger, "doSample[" << i << "] "
+        << std::hex
+        << "msb=0x" << msb
+        << ", lsb=0x" << lsb
+        << " => voltageWord=0x" << voltageWord
+        << std::dec
+        << " => voltage=" << voltage);
   }
 }
 

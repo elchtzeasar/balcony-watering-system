@@ -5,7 +5,7 @@
 namespace balcony_watering_system {
 namespace configuration {
 
-Si7021SensorConfiguration::Si7021SensorConfiguration() {
+Si7021SensorConfiguration::Si7021SensorConfiguration() : logger("hardware.si7021.configuration") {
 }
 
 Si7021SensorConfiguration::~Si7021SensorConfiguration() {
@@ -15,6 +15,7 @@ void Si7021SensorConfiguration::setField(
     const std::string& fieldName, const std::string& value) {
   if (fieldName == "name") {
     name = value;
+    LOG_DEBUG(logger, "fieldName=" << fieldName << ", value=" << value << " => name=" << name);
   }
   else {
     assert(false && "unknown field");

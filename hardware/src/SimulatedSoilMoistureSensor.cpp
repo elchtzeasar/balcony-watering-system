@@ -31,6 +31,7 @@ SimulatedSoilMoistureSensor::~SimulatedSoilMoistureSensor() {
 const string& SimulatedSoilMoistureSensor::getName() const {
   return name;
 }
+
 void SimulatedSoilMoistureSensor::doSample() {
   const auto now = steady_clock::now();
   const auto timeSinceLastUpdate = duration_cast<milliseconds>(now - lastUpdate);

@@ -5,6 +5,8 @@
 #include "IReadNode.h"
 #include "ITemperatureSensor.h"
 
+#include "Logger.h"
+
 namespace balcony_watering_system {
 namespace hardware {
 
@@ -31,6 +33,8 @@ class Si7021Sensor : public IReadNode, public ITemperatureSensor, public IHumidi
 
   float temperatureInDegrees;
   float humidityInPercent;
+
+  const platform::Logger logger;
 };
 
 } /* namespace hardware */

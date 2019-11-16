@@ -1,6 +1,8 @@
 #ifndef UI_SRC_TEXTGUI_H_
 #define UI_SRC_TEXTGUI_H_
 
+#include "Logger.h"
+
 #include <menu.h>
 #include <ncurses.h>
 #include <string>
@@ -98,6 +100,7 @@ private:
   ITEM** menuItems;
 
   int nameEndColumn;
+  const platform::Logger logger;
 };
 
 } /* namespace ui */

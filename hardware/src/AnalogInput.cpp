@@ -11,7 +11,8 @@ AnalogInput::AnalogInput(const string& name, float min, float max) :
     name(name),
     min(min),
     max(max),
-    currentVoltage(min) {
+    currentVoltage(min),
+    logger("hardware.analog-input", name) {
 }
 
 const std::string& AnalogInput::getName() const {
@@ -28,9 +29,11 @@ float AnalogInput::getMax() const {
 
 void AnalogInput::setCurrentVoltage(float voltage) {
   currentVoltage = voltage;
+  LOG_TRACE(logger, "setCurrentVoltage(" << voltage << ") => currentVoltage=" << currentVoltage);
 }
 
 float AnalogInput::getCurrentVoltage() const {
+  LOG_TRACE(logger, "getCurrentVoltage - currentVoltage=" << currentVoltage);
   return currentVoltage;
 }
 
