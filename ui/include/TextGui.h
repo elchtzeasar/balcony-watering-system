@@ -80,6 +80,8 @@ private:
 
   void doStartPumps();
   void doStopPumps();
+  void doIncreasePumps();
+  void doDecreasePumps();
 
   const std::vector<logic::Pump*> pumps;
   const std::vector<hardware::IMotorController*> motors;

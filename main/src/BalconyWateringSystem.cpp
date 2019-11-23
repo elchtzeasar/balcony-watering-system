@@ -33,6 +33,8 @@ void BalconyWateringSystem::run() {
 
     sleep_for(milliseconds(100));
   }
+
+  master.doShutdownNodes();
 }
 
 } /* namespace main */

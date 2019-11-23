@@ -139,6 +139,14 @@ bool TextGui::exec() {
       return false;
     }
   } break;
+  case '+':
+  case KEY_UP:
+    doIncreasePumps();
+    break;
+  case '-':
+  case KEY_DOWN:
+    doDecreasePumps();
+    break;
   case 'q':
     return false;
     break;
@@ -166,9 +174,22 @@ void TextGui::doStartPumps() {
     pump->start();
   }
 }
+
 void TextGui::doStopPumps() {
   for (auto pump : pumps) {
     pump->stop();
+  }
+}
+
+void TextGui::doIncreasePumps() {
+  for (auto pump : pumps) {
+    pump->increase();
+  }
+}
+
+void TextGui::doDecreasePumps() {
+  for (auto pump : pumps) {
+    pump->decrease();
   }
 }
 

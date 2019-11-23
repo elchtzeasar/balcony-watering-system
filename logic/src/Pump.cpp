@@ -30,6 +30,14 @@ void Pump::stop() {
   motorController.runInPercent(0);
 }
 
+void Pump::increase() {
+  motorController.runInPercent(motorController.getCurrentSpeedInPercentage() + 1);
+}
+
+void Pump::decrease() {
+  motorController.runInPercent(motorController.getCurrentSpeedInPercentage() - 1);
+}
+
 bool Pump::isPumping() const {
   return motorController.getCurrentSpeedInPercentage() > 0;
 }

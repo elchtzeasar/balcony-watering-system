@@ -3,6 +3,7 @@ include_directories (${PROJECT_SOURCE_DIR}/configuration/include)
 include_directories (${PROJECT_SOURCE_DIR}/platform/include)
 
 add_library (configuration 
+  src/PwmMotorControllerConfiguration.cpp
   src/PumpConfiguration.cpp
   src/TemperatureMeasurementConfiguration.cpp
   src/VolumeMeasurementConfiguration.cpp

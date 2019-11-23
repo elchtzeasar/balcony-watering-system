@@ -1,13 +1,14 @@
 #include "VolumeMeasurementConfiguration.h"
 
+#include "LexicalCast.h"
+
 #include <cassert>
 #include <cmath>
-#include <sstream>
 
 namespace balcony_watering_system {
 namespace configuration {
 
-using ::std::istringstream;
+using ::balcony_watering_system::platform::lexical_cast;
 using ::std::string;
 using ::std::vector;
 
@@ -32,9 +33,7 @@ void VolumeMeasurementConfiguration::setField(
     LOG_DEBUG(logger, "fieldName=" << fieldName << ", value=" << value << " => sensor=" << sensor);
   }
   else if(fieldName == "area-in-m2") {
-    istringstream stream;
-    stream.str(value);
-    stream >> areaInSquareMeters;
+    areaInSquareMeters = lexical_cast<double>(value);
     LOG_DEBUG(logger, "fieldName=" << fieldName << ", value=" << value << " => areaInSquareMeters=" << areaInSquareMeters);
   }
   else {

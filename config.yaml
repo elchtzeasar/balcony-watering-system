@@ -15,13 +15,18 @@ VolumeMeasurement:
 Pump:
   name: pump
   motor: ctrl
+PwmMotorController:
+  name: ctrl
+  output0: 20
+  output1: 21
+  pwm: 18
 Simulation:
   soil-sensor: outer
   soil-sensor: inner
   humidity-sensor: humid
   #temperature-sensor: therm
   distance-sensor: dist
-  motor: ctrl
+  #motor: ctrl
 Si7021Sensor:
   name: therm
 ADS1015:

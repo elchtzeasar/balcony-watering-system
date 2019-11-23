@@ -5,6 +5,7 @@
 #include "GroveSoilMoistureSensorConfiguration.h"
 #include "IConfiguration.h"
 #include "PumpConfiguration.h"
+#include "PwmMotorControllerConfiguration.h"
 #include "Si7021SensorConfiguration.h"
 #include "SimulationConfiguration.h"
 #include "SoilMoistureMeasurementConfiguration.h"
@@ -180,6 +181,20 @@ const vector<IADS1015Configuration const *> ConfigurationFile::getADS1015Configu
   return result;
 }
 
+const std::vector<IPwmMotorControllerConfiguration const *> ConfigurationFile::getPwmMotorControllerConfigurations() const {
+  vector<IPwmMotorControllerConfiguration const *> result;
+
+  for (const auto configuration : configurations) {
+    auto specializedConfiguration = dynamic_cast<IPwmMotorControllerConfiguration const*>(configuration);
+
+    if (specializedConfiguration) {
+      result.push_back(specializedConfiguration);
+    }
+  }
+
+  return result;
+}
+
 ConfigurationFile::ConsumeResult ConfigurationFile::consume(
     ParseState& state, const yaml_event_t& event) {
   ConsumeResult result;
@@ -265,6 +280,9 @@ IConfiguration* ConfigurationFile::createConfiguration(const string& type) {
   }
   else if (type == "Pump") {
     return new PumpConfiguration();
+  }
+  else if (type == "PwmMotorController") {
+    return new PwmMotorControllerConfiguration();
   }
   else if (type == "Simulation") {
     return new SimulationConfiguration();

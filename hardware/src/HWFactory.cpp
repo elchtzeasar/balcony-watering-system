@@ -3,10 +3,12 @@
 #include "ConfigurationFile.h"
 #include "IADS1015Configuration.h"
 #include "IAnalogSoilMoistureSensorConfiguration.h"
+#include "IPwmMotorControllerConfiguration.h"
 #include "ISi7021SensorConfiguration.h"
 #include "ISimulationConfiguration.h"
 #include "ADS1015.h"
 #include "AnalogSoilMoistureSensor.h"
+#include "PwmMotorController.h"
 #include "Si7021Sensor.h"
 #include "SimulatedMotor.h"
 #include "SimulatedDistanceSensor.h"
@@ -97,6 +99,14 @@ void HWFactory::create() {
                                                analogInput,
                                                master);
     soilMoistureSensors.push_back(sensor);
+  }
+  for (const auto& configuration : configurationFile.getPwmMotorControllerConfigurations()) {
+    auto motor = new PwmMotorController(configuration->getName(),
+                                        configuration->getOutput0Pin(),
+                                        configuration->getOutput1Pin(),
+                                        configuration->getPwmPin(),
+                                        master);
+    motors.push_back(motor);
   }
 }
 

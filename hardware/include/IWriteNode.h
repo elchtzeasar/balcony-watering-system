@@ -9,6 +9,8 @@ public:
   virtual ~IWriteNode() = default;
 
   virtual void doControl() const = 0;
+
+  virtual void doShutdown() const {}
 };
 
 } /* namespace hardware */

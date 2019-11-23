@@ -14,6 +14,7 @@ class IAnalogSoilMoistureSensorConfiguration;
 class IConfiguration;
 class IHumidityMeasurementConfiguration;
 class IPumpConfiguration;
+class IPwmMotorControllerConfiguration;
 class ISimulationConfiguration;
 class ISi7021SensorConfiguration;
 class ISoilMoistureMeasurementConfiguration;
@@ -42,6 +43,7 @@ public:
   const std::vector<ISi7021SensorConfiguration const *> getSi7021SensorConfigurations() const;
   const std::vector<IAnalogSoilMoistureSensorConfiguration const *> getAnalogSoilMoistureSensors() const;
   const std::vector<IADS1015Configuration const *> getADS1015Configurations() const;
+  const std::vector<IPwmMotorControllerConfiguration const *> getPwmMotorControllerConfigurations() const;
 
 private:
   enum class ParseState { NONE, EXPECTING_TYPE, TYPE_RECEIVED, EXPECTING_KEY, EXPECTING_VALUE };

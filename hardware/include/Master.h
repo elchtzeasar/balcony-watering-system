@@ -28,6 +28,7 @@ public:
 
   void doSampleNodes();
   void doControlNodes();
+  void doShutdownNodes();
 
 private:
   std::vector<IReadNode*> readNodes;

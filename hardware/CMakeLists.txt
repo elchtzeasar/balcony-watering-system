@@ -11,8 +11,12 @@ add_library (hardware
   src/SimulatedMotor.cpp
   src/SimulatedDistanceSensor.cpp
   src/Si7021Sensor.cpp
+  src/PwmMotorController.cpp
   src/ADS1015.cpp
   src/AnalogInput.cpp
   src/AnalogSoilMoistureSensor.cpp
   src/Master.cpp
+  src/OutputPin.cpp
+  src/InputPin.cpp
+  src/PwmPin.cpp
   )

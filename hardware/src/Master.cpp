@@ -4,10 +4,12 @@
 #include "IReadNode.h"
 #include "IWriteNode.h"
 
+#include <cassert>
 #include <cstring>
 #include <fcntl.h>
 #include <iostream>
 #include <linux/i2c-dev.h>
+#include <pigpio.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -25,6 +27,7 @@ Master::Master() : readNodes(), writeNodes(), adapterNodes(), fd(openDevice()) {
 
 Master::~Master() {
   close(fd);
+  gpioTerminate();
 }
 
 void Master::registerReadNode(IReadNode& node) {
@@ -46,6 +49,8 @@ int openDevice() {
     cerr << "Failed to open the bus: " << strerror(errno) << endl;
     exit(1);
   }
+
+  assert(gpioInitialise() >= 0 && "could not initialize");
 
   return fd;
 }
@@ -81,6 +86,11 @@ void Master::doControlNodes() {
   }
 }
 
+void Master::doShutdownNodes() {
+  for (auto node : writeNodes) {
+    node->doShutdown();
+  }
+}
 
 } /* namespace hardware */
 } /* namespace balcony_watering_system */
