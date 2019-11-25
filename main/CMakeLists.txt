@@ -21,6 +21,7 @@ target_link_libraries (BalconyWateringSystem LINK_PUBLIC
   logic
   ui
   platform
+  stdc++fs
   Threads::Threads
   ${PIGPIO_LIBRARY}
   ${YAML_LIBRARY})

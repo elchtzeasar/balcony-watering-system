@@ -1,17 +1,13 @@
 ---
 SoilMoistureMeasurement:
-  name: box
+  name: soil
   sensor: soilmoisture1
 HumidityMeasurement:
-  name: box
-  sensor: humid
-TemperatureMeasurement:
-  name: box
+  name: airhumidity
   sensor: therm
-VolumeMeasurement:
-  name: dunk
-  sensor: dist
-  area-in-m2: 0.2
+TemperatureMeasurement:
+  name: airtemp
+  sensor: therm
 Pump:
   name: pump
   motor: ctrl
@@ -20,13 +16,6 @@ PwmMotorController:
   output0: 20
   output1: 21
   pwm: 18
-Simulation:
-  soil-sensor: outer
-  soil-sensor: inner
-  humidity-sensor: humid
-  #temperature-sensor: therm
-  distance-sensor: dist
-  #motor: ctrl
 Si7021Sensor:
   name: therm
 ADS1015:

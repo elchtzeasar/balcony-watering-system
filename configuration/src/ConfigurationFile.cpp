@@ -14,11 +14,13 @@
 
 #include <cassert>
 #include <iostream>
+#include <filesystem>
 #include <stdio.h>
 
 namespace balcony_watering_system {
 namespace configuration {
 
+using ::std::filesystem::path;
 using ::std::string;
 using ::std::vector;
 
@@ -38,7 +40,15 @@ void ConfigurationFile::parse() {
   yaml_parser_t parser;
   yaml_event_t event;
 
-  auto configurationFile = fopen("config.yaml", "r");
+  FILE* configurationFile = nullptr;
+
+  for (const auto& url : {path("config.yaml"), path("/etc/balcony-watering-system.yaml")}) {
+    if (exists(url)) {
+      configurationFile = fopen(url.c_str(), "r");
+      break;
+    }
+  }
+  assert(configurationFile != nullptr && "could not find config file");
 
   yaml_parser_initialize(&parser);
   yaml_parser_set_input_file(&parser, configurationFile);
