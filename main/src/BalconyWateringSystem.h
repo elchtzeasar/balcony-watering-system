@@ -5,6 +5,10 @@ namespace balcony_watering_system::hardware {
 class Master;
 }
 
+namespace balcony_watering_system::logic {
+class Logic;
+}
+
 namespace balcony_watering_system::ui {
 class TextGui;
 }
@@ -14,7 +18,7 @@ namespace main {
 
 class BalconyWateringSystem {
 public:
-  BalconyWateringSystem(hardware::Master& master, ui::TextGui& gui);
+  BalconyWateringSystem(logic::Logic& logic, hardware::Master& master, ui::TextGui& gui);
   virtual ~BalconyWateringSystem();
 
   BalconyWateringSystem& operator=(BalconyWateringSystem&) = delete;
@@ -24,6 +28,7 @@ public:
 
 private:
   hardware::Master& master;
+  logic::Logic& logic;
   ui::TextGui& gui;
 };
 

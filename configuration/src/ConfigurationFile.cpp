@@ -11,6 +11,7 @@
 #include "SoilMoistureMeasurementConfiguration.h"
 #include "TemperatureMeasurementConfiguration.h"
 #include "VolumeMeasurementConfiguration.h"
+#include "WateringLogicConfiguration.h"
 
 #include <cassert>
 #include <iostream>
@@ -78,6 +79,21 @@ const vector<IPumpConfiguration const *> ConfigurationFile::getPumpConfiguration
 
   return result;
 }
+
+const vector<IWateringLogicConfiguration const *> ConfigurationFile::getWateringLogicConfigurations() const {
+  vector<IWateringLogicConfiguration const *> result;
+
+  for (const auto configuration : configurations) {
+    auto specializedConfiguration = dynamic_cast<IWateringLogicConfiguration const*>(configuration);
+
+    if (specializedConfiguration) {
+      result.push_back(specializedConfiguration);
+    }
+  }
+
+  return result;
+}
+
 
 const vector<IHumidityMeasurementConfiguration const *> ConfigurationFile::getHumidityMeasurementConfigurations() const {
   vector<IHumidityMeasurementConfiguration const *> result;
@@ -276,7 +292,10 @@ ConfigurationFile::ConsumeResult ConfigurationFile::consume(
 }
 
 IConfiguration* ConfigurationFile::createConfiguration(const string& type) {
-  if (type == "HumidityMeasurement") {
+  if (type == "WateringLogic") {
+    return new WateringLogicConfiguration();
+  }
+  else if (type == "HumidityMeasurement") {
     return new HumidityMeasurementConfiguration();
   }
   else if (type == "SoilMoistureMeasurement") {

@@ -18,7 +18,9 @@ HumidityMeasurement::HumidityMeasurement(
     const IHumidityMeasurementConfiguration& configuration,
     const vector<IHumiditySensor*>& sensors) :
   name(configuration.getName()),
-  sensors(sensors) {
+  threshold(configuration.getThreshold()),
+  sensors(sensors),
+  logger("logic.humidity", name) {
 }
 
 HumidityMeasurement::~HumidityMeasurement() {
@@ -34,6 +36,15 @@ float HumidityMeasurement::getHumidityInPercent() const {
     percentage = max(percentage, sensor->getHumidityInPercent());
   }
   return percentage;
+}
+
+bool HumidityMeasurement::readyToWater() const {
+  const auto humidity = getHumidityInPercent();
+
+  const bool result = threshold > 0 && humidity > threshold;
+  LOG_DEBUG(logger, "readyToWater - threshold=" << threshold << ", humidity=" << humidity << " => return " << result);
+
+  return result;
 }
 
 } /* namespace logic */

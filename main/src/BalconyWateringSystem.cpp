@@ -1,5 +1,6 @@
 #include "BalconyWateringSystem.h"
 
+#include "Logic.h"
 #include "TextGui.h"
 #include "Master.h"
 
@@ -13,8 +14,9 @@ using ::std::this_thread::sleep_for;
 using ::std::chrono::milliseconds;
 
 BalconyWateringSystem::BalconyWateringSystem(
-    hardware::Master& master, ui::TextGui& gui) :
+    logic::Logic& logic, hardware::Master& master, ui::TextGui& gui) :
     master(master),
+    logic(logic),
     gui(gui) {
 }
 
@@ -28,6 +30,7 @@ void BalconyWateringSystem::run() {
     master.doSampleNodes();
 
     keepRunning = gui.exec();
+    logic.control();
 
     master.doControlNodes();
 

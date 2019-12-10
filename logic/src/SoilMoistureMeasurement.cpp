@@ -18,7 +18,9 @@ SoilMoistureMeasurement::SoilMoistureMeasurement(
     const ISoilMoistureMeasurementConfiguration& configuration,
     const vector<ISoilMoistureSensor*>& sensors) :
   name(configuration.getName()),
-  sensors(sensors) {
+  threshold(configuration.getThreshold()),
+  sensors(sensors),
+  logger("logic.soil-moisture", name) {
 }
 
 SoilMoistureMeasurement::~SoilMoistureMeasurement() {
@@ -34,6 +36,15 @@ int SoilMoistureMeasurement::getMoistureInPercent() const {
     percentage = max(percentage, sensor->getMoistureInPercent());
   }
   return percentage;
+}
+
+bool SoilMoistureMeasurement::readyToWater() const {
+  const auto currentMoisture = getMoistureInPercent();
+
+  const bool result = threshold > 0 && currentMoisture < threshold;
+  LOG_DEBUG(logger, "readyToWater - threshold=" << threshold << ", currentMoisture=" << currentMoisture << " => return " << result);
+
+  return result;
 }
 
 } /* namespace logic */

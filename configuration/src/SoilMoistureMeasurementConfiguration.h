@@ -16,10 +16,12 @@ public:
   virtual void setField(const std::string& fieldName, const std::string& value) override;
 
   virtual const std::string& getName() const override;
+  virtual int getThreshold() const override;
   virtual const std::vector<std::string>& getSensors() const override;
 
 private:
   std::string name;
+  int threshold;
   std::vector<std::string> sensors;
 
   const platform::Logger logger;

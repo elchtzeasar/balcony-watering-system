@@ -1,6 +1,8 @@
 #ifndef LOGIC_SRC_TEMPERATUREMEASUREMENT_H_
 #define LOGIC_SRC_TEMPERATUREMEASUREMENT_H_
 
+#include "Logger.h"
+
 #include <string>
 #include <vector>
 
@@ -27,9 +29,14 @@ public:
   float getMax() const;
   float getTemperatureInDegrees() const;
 
+  bool readyToWater() const;
+
 private:
   const std::string name;
+  const float threshold;
   const std::vector<hardware::ITemperatureSensor*> sensors;
+
+  const platform::Logger logger;
 };
 
 } /* namespace logic */

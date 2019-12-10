@@ -8,16 +8,21 @@
 #include "ISoilMoistureMeasurementConfiguration.h"
 #include "ITemperatureMeasurementConfiguration.h"
 #include "IVolumeMeasurementConfiguration.h"
+#include "IWateringLogicConfiguration.h"
 #include "Pump.h"
 #include "SoilMoistureMeasurement.h"
 #include "TemperatureMeasurement.h"
 #include "VolumeMeasurement.h"
+#include "WateringLogic.h"
 
-#include <vector>
+#include <algorithm>
+#include <cassert>
 
 namespace balcony_watering_system {
 namespace logic {
 
+using ::std::find_if;
+using ::std::string;
 using ::std::vector;
 using ::balcony_watering_system::configuration::ConfigurationFile;
 using ::balcony_watering_system::hardware::HWFactory;
@@ -27,12 +32,13 @@ using ::balcony_watering_system::hardware::ISoilMoistureSensor;
 using ::balcony_watering_system::hardware::ITemperatureSensor;
 
 LogicFactory::LogicFactory(const ConfigurationFile& configurationFile,
+                           Logic& logic,
                            HWFactory& hwFactory) :
   configurationFile(configurationFile),
+  logic(logic),
   hwFactory(hwFactory),
   pumps(),
   soilMoistureMeasurements() {
-
 }
 
 LogicFactory::~LogicFactory() {
@@ -90,6 +96,18 @@ void LogicFactory::create() {
     IDistanceSensor& sensor = hwFactory.getDistanceSensor(configuration->getSensor());
     volumeMeasurements.push_back(new VolumeMeasurement(*configuration, sensor));
   }
+
+  for (const auto configuration : configurationFile.getWateringLogicConfigurations()) {
+    auto* soil = getSoilMoistureMeasurement(configuration->getSoilMoistureMeasurement());
+    auto* temperature = getTemperatureMeasurement(configuration->getTemperatureMeasurement());
+    auto* humidity = getHumidityMeasurement(configuration->getHumidityMeasurement());
+    auto* pump = getPump(configuration->getPumpController());
+    const auto& timeToWater = configuration->getTimeToWater();
+    const auto& timeToNotWater = configuration->getTimeToNotWater();
+
+    wateringLogics.push_back(
+        new WateringLogic(logic, soil, temperature, humidity, pump, timeToWater, timeToNotWater));
+  }
 }
 
 const std::vector<Pump*>& LogicFactory::getPumps() {
@@ -100,12 +118,34 @@ const std::vector<Pump*>& LogicFactory::getPumps() const {
   return pumps;
 }
 
+Pump* LogicFactory::getPump(const string& name) const {
+  const auto it = find_if(pumps.begin(), pumps.end(), [name](Pump* pump) {
+    return name == pump->getName();
+  });
+
+  if (it != pumps.end()) {
+    return *it;
+  }
+  return nullptr;
+}
+
 const std::vector<HumidityMeasurement*>& LogicFactory::getHumidityMeasurements() {
   return humidityMeasurements;
 }
 
 const std::vector<HumidityMeasurement*>& LogicFactory::getHumidityMeasurements() const {
   return humidityMeasurements;
+}
+
+const HumidityMeasurement* LogicFactory::getHumidityMeasurement(const string& name) const {
+  const auto it = find_if(humidityMeasurements.begin(), humidityMeasurements.end(), [name](auto* measurement) {
+    return name == measurement->getName();
+  });
+
+  if (it != humidityMeasurements.end()) {
+    return *it;
+  }
+  return nullptr;
 }
 
 const std::vector<SoilMoistureMeasurement*>& LogicFactory::getSoilMoistureMeasurements() {
@@ -116,12 +156,34 @@ const std::vector<SoilMoistureMeasurement*>& LogicFactory::getSoilMoistureMeasur
   return soilMoistureMeasurements;
 }
 
+const SoilMoistureMeasurement* LogicFactory::getSoilMoistureMeasurement(const string& name) const {
+  const auto it = find_if(soilMoistureMeasurements.begin(), soilMoistureMeasurements.end(), [name](auto* mearsurement) {
+    return name == mearsurement->getName();
+  });
+
+  if (it != soilMoistureMeasurements.end()) {
+    return *it;
+  }
+  return nullptr;
+}
+
 const std::vector<TemperatureMeasurement*>& LogicFactory::getTemperatureMeasurements() {
   return temperatureMeasurements;
 }
 
 const std::vector<TemperatureMeasurement*>& LogicFactory::getTemperatureMeasurements() const {
   return temperatureMeasurements;
+}
+
+const TemperatureMeasurement* LogicFactory::getTemperatureMeasurement(const string& name) const {
+  const auto it = find_if(temperatureMeasurements.begin(), temperatureMeasurements.end(), [name](auto* measurement) {
+    return name == measurement->getName();
+  });
+
+  if (it != temperatureMeasurements.end()) {
+    return *it;
+  }
+  return nullptr;
 }
 
 const std::vector<VolumeMeasurement*>& LogicFactory::getVolumeMeasurements() {
@@ -131,6 +193,26 @@ const std::vector<VolumeMeasurement*>& LogicFactory::getVolumeMeasurements() {
 const std::vector<VolumeMeasurement*>& LogicFactory::getVolumeMeasurements() const {
   return volumeMeasurements;
 }
+
+const VolumeMeasurement* LogicFactory::getVolumeMeasurement(const string& name) const {
+  const auto it = find_if(volumeMeasurements.begin(), volumeMeasurements.end(), [name](auto* measurement) {
+    return name == measurement->getName();
+  });
+
+  if (it != volumeMeasurements.end()) {
+    return *it;
+  }
+  return nullptr;
+}
+
+const std::vector<WateringLogic*>& LogicFactory::getWateringLogics() {
+  return wateringLogics;
+}
+
+const std::vector<WateringLogic*>& LogicFactory::getWateringLogics() const {
+  return wateringLogics;
+}
+
 
 } /* namespace logic */
 } /* namespace balcony_watering_system */

@@ -1,6 +1,7 @@
 #ifndef LOGIC_SRC_LOGICFACTORY_H_
 #define LOGIC_SRC_LOGICFACTORY_H_
 
+#include <string>
 #include <vector>
 
 namespace balcony_watering_system::configuration {
@@ -14,15 +15,18 @@ class HWFactory;
 namespace balcony_watering_system {
 namespace logic {
 
-class Pump;
+class Logic;
 class HumidityMeasurement;
+class Pump;
 class SoilMoistureMeasurement;
 class TemperatureMeasurement;
 class VolumeMeasurement;
+class WateringLogic;
 
 class LogicFactory {
 public:
   LogicFactory(const configuration::ConfigurationFile& configurationFile,
+               Logic& logic,
                hardware::HWFactory& hwFactory);
   virtual ~LogicFactory();
 
@@ -33,17 +37,26 @@ public:
 
   const std::vector<Pump*>& getPumps();
   const std::vector<Pump*>& getPumps() const;
+  Pump* getPump(const std::string& name) const;
   const std::vector<HumidityMeasurement*>& getHumidityMeasurements();
   const std::vector<HumidityMeasurement*>& getHumidityMeasurements() const;
+  const HumidityMeasurement* getHumidityMeasurement(const std::string& name) const;
   const std::vector<SoilMoistureMeasurement*>& getSoilMoistureMeasurements();
   const std::vector<SoilMoistureMeasurement*>& getSoilMoistureMeasurements() const;
+  const SoilMoistureMeasurement* getSoilMoistureMeasurement(const std::string& name) const;
   const std::vector<TemperatureMeasurement*>& getTemperatureMeasurements();
   const std::vector<TemperatureMeasurement*>& getTemperatureMeasurements() const;
+  const TemperatureMeasurement* getTemperatureMeasurement(const std::string& name) const;
   const std::vector<VolumeMeasurement*>& getVolumeMeasurements();
   const std::vector<VolumeMeasurement*>& getVolumeMeasurements() const;
+  const VolumeMeasurement* getVolumeMeasurement(const std::string& name) const;
+
+  const std::vector<WateringLogic*>& getWateringLogics();
+  const std::vector<WateringLogic*>& getWateringLogics() const;
 
 private:
   const configuration::ConfigurationFile& configurationFile;
+  Logic& logic;
   hardware::HWFactory& hwFactory;
 
   std::vector<Pump*> pumps;
@@ -51,6 +64,7 @@ private:
   std::vector<SoilMoistureMeasurement*> soilMoistureMeasurements;
   std::vector<TemperatureMeasurement*> temperatureMeasurements;
   std::vector<VolumeMeasurement*> volumeMeasurements;
+  std::vector<WateringLogic*> wateringLogics;
 };
 
 } /* namespace logic */

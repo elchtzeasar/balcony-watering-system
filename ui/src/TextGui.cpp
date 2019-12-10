@@ -13,6 +13,7 @@
 #include "SoilMoistureMeasurement.h"
 #include "TemperatureMeasurement.h"
 #include "VolumeMeasurement.h"
+#include "WateringLogic.h"
 
 #include <algorithm>
 #include <cmath>
@@ -26,6 +27,7 @@ namespace balcony_watering_system {
 namespace ui {
 
 using ::balcony_watering_system::logic::LogicFactory;
+using ::balcony_watering_system::logic::WateringLogic;
 using ::balcony_watering_system::hardware::HWFactory;
 using ::std::ios;
 using ::std::max;
@@ -45,6 +47,7 @@ static const int DATA_COLUMN = 3;
 static const int FIRST_DATA_ROW = 2;
 
 TextGui::TextGui(const LogicFactory& logicFactory, const HWFactory& hwFactory) :
+    wateringLogics(logicFactory.getWateringLogics()),
     pumps(logicFactory.getPumps()),
     motors(hwFactory.getMotors()),
     humidityMeasurements(logicFactory.getHumidityMeasurements()),
@@ -85,7 +88,8 @@ TextGui::TextGui(const LogicFactory& logicFactory, const HWFactory& hwFactory) :
   set_menu_sub(menu, derwin(menuWindow, 1, COLS-4, 1, 2));
   set_menu_format(menu, 1, 3);
 
-  auto nextDataRow = updatePumpMessages(FIRST_DATA_ROW);
+  auto nextDataRow = updateWateringLogicMessages(FIRST_DATA_ROW);
+  nextDataRow = updatePumpMessages(nextDataRow);
   nextDataRow = updateMotorMessages(nextDataRow);
   nextDataRow = updateHumidityMeasurementMessages(nextDataRow);
   nextDataRow = updateHumiditySensorMessages(nextDataRow);
@@ -152,7 +156,8 @@ bool TextGui::exec() {
     break;
   }
 
-  auto nextDataRow = updatePumpMessages(FIRST_DATA_ROW);
+  auto nextDataRow = updateWateringLogicMessages(FIRST_DATA_ROW);
+  nextDataRow = updatePumpMessages(nextDataRow);
   nextDataRow = updateMotorMessages(nextDataRow);
   nextDataRow = updateHumidityMeasurementMessages(nextDataRow);
   nextDataRow = updateHumiditySensorMessages(nextDataRow);
@@ -193,12 +198,29 @@ void TextGui::doDecreasePumps() {
   }
 }
 
+int TextGui::updateWateringLogicMessages(int nextRow) {
+  for (auto logic : wateringLogics) {
+    const auto state = logic->getState();
+
+    string message = "unknown";
+    switch (state) {
+    case WateringLogic::State::IDLE: message = "idle"; break;
+    case WateringLogic::State::WATERING: message = "watering"; break;
+    case WateringLogic::State::NOT_WATERING: message = "not watering"; break;
+    }
+
+    displayMessage(nextRow, "Watering Logic", message);
+    nextRow++;
+  }
+  return nextRow;
+}
+
 int TextGui::updatePumpMessages(int nextRow) {
   for (auto pump : pumps) {
     const bool isPumping = pump->isPumping();
     const string message = isPumping ? "pumping" : "not pumping";
 
-    displayData(nextRow, "Pump", pump->getName(), message);
+    displayMessage(nextRow, "Pump", pump->getName(), message);
     nextRow++;
   }
   return nextRow;
@@ -222,6 +244,10 @@ int TextGui::updateHumidityMeasurementMessages(int nextRow) {
                        measurement->getName(),
                        measurement->getHumidityInPercent());
     nextRow++;
+
+    const string message = measurement->readyToWater() ? "ready" : "not ready";
+    displayMessage(nextRow, "", message);
+    nextRow++;
   }
   return nextRow;
 }
@@ -243,6 +269,10 @@ int TextGui::updateSoilMeasurementMessages(int nextRow) {
                        "MoistureMeasurement",
                        measurement->getName(),
                        measurement->getMoistureInPercent());
+    nextRow++;
+
+    const string message = measurement->readyToWater() ? "ready" : "not ready";
+    displayMessage(nextRow, "", message);
     nextRow++;
   }
   return nextRow;
@@ -268,6 +298,10 @@ int TextGui::updateTemperatureMeasurementMessages(int nextRow) {
                        measurement->getMax(),
                        measurement->getTemperatureInDegrees(),
                        "C");
+    nextRow++;
+
+    const string message = measurement->readyToWater() ? "ready" : "not ready";
+    displayMessage(nextRow, "", message);
     nextRow++;
   }
   return nextRow;
@@ -329,32 +363,39 @@ int TextGui::updateAnalogInputMessages(int nextRow) {
   return nextRow;
 }
 
-void TextGui::displayData(int row,
+void TextGui::displayMessage(int row,
                           const std::string& header,
                           const std::string& name,
                           const std::string& message) {
   ostringstream stream;
   stream << header << "[" << name << "]: ";
-  nameEndColumn = std::max<int>(nameEndColumn, int(stream.str().size()));
+  displayMessage(row, stream.str(), message);
+}
 
-  const int nameFillSize = max<int>(0, nameEndColumn - stream.str().size());
-  const string nameFill(nameFillSize, ' ');
-  stream << nameFill;
+void TextGui::displayMessage(int row,
+                             const string& header,
+                             const string& message) {
+  nameEndColumn = std::max<int>(nameEndColumn, int(header.size()));
+  ostringstream stream;
+  stream << header;
 
-  const int lineFillSize = max<int>(0, COLS - nameEndColumn - nameFillSize - message.size() - 7);
+  const int headerFillSize = max<int>(0, nameEndColumn - header.size());
+  const string headerFill(headerFillSize, ' ');
+  stream << headerFill;
+
+  const int lineFillSize = max<int>(0, COLS - nameEndColumn - headerFillSize - message.size() - 7);
   const string lineFill(lineFillSize, ' ');
   stream << message << lineFill;
 
   const string line = stream.str();
   mvwaddstr(dataWindow, row, DATA_COLUMN, line.c_str());
 
-  LOG_DEBUG(logger, "displayData[msg] - row=" << row
+  LOG_DEBUG(logger, "displayMessage - row=" << row
       << ", header=" << header
-      << ", name=" << name
       << ", message=" << message
-      << " => nameFillSize=" << nameFillSize
+      << " => nameFillSize=" << headerFillSize
       << ", lineFillSize=" << lineFillSize
-      << " => nameFill='" << nameFill << "'"
+      << " => nameFill='" << headerFill << "'"
       << "', lineFill='" << lineFill << "'"
       << " => line=" << line);
 }

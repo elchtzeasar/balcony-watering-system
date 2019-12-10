@@ -20,6 +20,7 @@ class ISi7021SensorConfiguration;
 class ISoilMoistureMeasurementConfiguration;
 class ITemperatureMeasurementConfiguration;
 class IVolumeMeasurementConfiguration;
+class IWateringLogicConfiguration;
 
 class ConfigurationFile {
 public:
@@ -30,6 +31,8 @@ public:
   ConfigurationFile& operator=(const ConfigurationFile&&) = delete;
 
   void parse();
+
+  const std::vector<IWateringLogicConfiguration const *> getWateringLogicConfigurations() const;
 
   const std::vector<IHumidityMeasurementConfiguration const *> getHumidityMeasurementConfigurations() const;
   const std::vector<ISoilMoistureMeasurementConfiguration const *>

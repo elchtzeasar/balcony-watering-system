@@ -15,6 +15,7 @@ namespace balcony_watering_system::logic {
   class SoilMoistureMeasurement;
   class TemperatureMeasurement;
   class VolumeMeasurement;
+  class WateringLogic;
 }
 
 namespace balcony_watering_system::hardware {
@@ -39,6 +40,7 @@ public:
   bool exec();
 
 private:
+  int updateWateringLogicMessages(int nextRow);
   int updatePumpMessages(int nextRow);
   int updateMotorMessages(int nextRow);
   int updateSoilMeasurementMessages(int nextRow);
@@ -51,10 +53,13 @@ private:
   int updateDistanceSensorMessages(int nextRow);
   int updateAnalogInputMessages(int nextRow);
 
-  void displayData(int row,
-                   const std::string& header,
-                   const std::string& name,
-                   const std::string& message);
+  void displayMessage(int row,
+                      const std::string& header,
+                      const std::string& message);
+  void displayMessage(int row,
+                      const std::string& header,
+                      const std::string& name,
+                      const std::string& message);
   void displayProgressBar(int row,
                           const std::string& header,
                           const std::string& name,
@@ -82,6 +87,8 @@ private:
   void doStopPumps();
   void doIncreasePumps();
   void doDecreasePumps();
+
+  const std::vector<logic::WateringLogic*> wateringLogics;
 
   const std::vector<logic::Pump*> pumps;
   const std::vector<hardware::IMotorController*> motors;

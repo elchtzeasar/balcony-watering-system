@@ -1,6 +1,7 @@
 #include "BalconyWateringSystem.h"
 #include "ConfigurationFile.h"
 #include "HWFactory.h"
+#include "Logic.h"
 #include "LogicFactory.h"
 #include "Master.h"
 #include "TextGui.h"

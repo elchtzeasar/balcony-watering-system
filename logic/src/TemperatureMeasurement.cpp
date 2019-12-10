@@ -19,7 +19,9 @@ TemperatureMeasurement::TemperatureMeasurement(
     const ITemperatureMeasurementConfiguration& configuration,
     const vector<ITemperatureSensor*>& sensors) :
   name(configuration.getName()),
-  sensors(sensors) {
+  threshold(configuration.getThreshold()),
+  sensors(sensors),
+  logger("logic.temperature", name) {
 }
 
 TemperatureMeasurement::~TemperatureMeasurement() {
@@ -47,6 +49,15 @@ float TemperatureMeasurement::getTemperatureInDegrees() const {
   temperature = max(temperature, getMin());
 
   return temperature;
+}
+
+bool TemperatureMeasurement::readyToWater() const {
+  const auto currentTemperature = getTemperatureInDegrees();
+
+  const bool result = threshold > 0 && 0 < currentTemperature && currentTemperature < threshold;
+  LOG_DEBUG(logger, "readyToWater - threshold=" << threshold << ", currentTemperature=" << currentTemperature << " => return " << result);
+
+  return result;
 }
 
 } /* namespace logic */
