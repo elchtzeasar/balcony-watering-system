@@ -8,12 +8,18 @@
 
 #include <string>
 #include <sstream>
+#include <iostream>
 
 #define LOG_LEVEL(logger, msg, lvl) {                  \
  do {                                                  \
-    std::ostringstream stream;                         \
-    stream << msg;                                     \
-    logger.log(platform::LogLevel::lvl, stream.str()); \
+    using namespace std;                               \
+    ostringstream stream;                              \
+    stream << __FILE__ << ":" << __LINE__ << " - " << msg; \
+    const auto level = platform::LogLevel::lvl;        \
+    logger.log(level, stream.str());                   \
+    if (level >= platform::LogLevel::ERROR) {           \
+      cerr << level << ": " << stream.str() << endl;   \
+    }                                                  \
   } while(false);                                      \
 }
 

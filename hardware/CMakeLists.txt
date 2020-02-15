@@ -13,6 +13,7 @@ add_library (hardware
   src/Si7021Sensor.cpp
   src/PwmMotorController.cpp
   src/ADS1015.cpp
+  src/Arduino.cpp
   src/AnalogInput.cpp
   src/AnalogSoilMoistureSensor.cpp
   src/Master.cpp

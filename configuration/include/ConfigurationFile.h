@@ -11,6 +11,7 @@ namespace configuration {
 
 class IADS1015Configuration;
 class IAnalogSoilMoistureSensorConfiguration;
+class IArduinoConfiguration;
 class IConfiguration;
 class IHumidityMeasurementConfiguration;
 class IPumpConfiguration;
@@ -46,6 +47,7 @@ public:
   const std::vector<ISi7021SensorConfiguration const *> getSi7021SensorConfigurations() const;
   const std::vector<IAnalogSoilMoistureSensorConfiguration const *> getAnalogSoilMoistureSensors() const;
   const std::vector<IADS1015Configuration const *> getADS1015Configurations() const;
+  const std::vector<IArduinoConfiguration const *> getArduinoConfigurations() const;
   const std::vector<IPwmMotorControllerConfiguration const *> getPwmMotorControllerConfigurations() const;
 
 private:

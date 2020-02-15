@@ -13,6 +13,7 @@ add_library (configuration
   src/SoilMoistureMeasurementConfiguration.cpp
   src/HumidityMeasurementConfiguration.cpp
   src/ADS1015Configuration.cpp
+  src/ArduinoConfiguration.cpp
   src/GroveSoilMoistureSensorConfiguration.cpp
   src/ConfigurationFile.cpp
   )

@@ -17,12 +17,11 @@
 namespace balcony_watering_system {
 namespace hardware {
 
-using ::std::cerr;
-using ::std::endl;
+using ::balcony_watering_system::platform::Logger;
 
-int openDevice();
+int openDevice(const Logger& logger);
 
-Master::Master() : readNodes(), writeNodes(), adapterNodes(), fd(openDevice()) {
+Master::Master() : logger("master"), readNodes(), writeNodes(), adapterNodes(), fd(openDevice(logger)) {
 }
 
 Master::~Master() {
@@ -42,11 +41,11 @@ void Master::registerAdapterNode(IAdapterNode& node) {
   adapterNodes.push_back(&node);
 }
 
-int openDevice() {
+int openDevice(const Logger& logger) {
   const char* device = "/dev/i2c-1";
   const int fd = open(device, O_RDWR);
   if (fd < 0) {
-    cerr << "Failed to open the bus: " << strerror(errno) << endl;
+    LOG_FATAL(logger, "Failed to open the bus: " << strerror(errno));
     exit(1);
   }
 
@@ -56,19 +55,45 @@ int openDevice() {
 }
 
 void Master::setNodeAddress(uint8_t address) {
-  ioctl(fd, I2C_SLAVE, address);
+  const auto result = ioctl(fd, I2C_SLAVE, address);
+  if (result == -1) {
+    LOG_ERROR(logger, "failed to set node address for address=" << address
+              << ": " << strerror(errno));
+    assert(false && "see log file");
+  }
 }
 
 void Master::writeByte(const uint8_t data) {
-  write(fd, &data, sizeof(data));
+  const auto nrOfBytesWritten = write(fd, &data, sizeof(data));
+  if (nrOfBytesWritten != sizeof(data)) {
+    LOG_WARN(logger, nrOfBytesWritten << " bytes written, expected " << sizeof(data)
+             << ": " << strerror(errno));
+  }
 }
 
 void Master::writeData(uint8_t const* data, size_t size) {
-  write(fd, data, size);
+  const auto nrOfBytesWritten = write(fd, data, size);
+  if (nrOfBytesWritten != size) {
+    LOG_WARN(logger, nrOfBytesWritten << " bytes written, expected " << size
+             << ": " << strerror(errno));
+  }
 }
 
-int Master::readData(uint8_t *data, size_t size) {
-  return read(fd, data, size);
+int Master::readData(uint8_t* data, size_t size) {
+  const auto nrOfBytesRead = read(fd, data, size);
+  if (nrOfBytesRead <= 0) {
+    LOG_WARN(logger, nrOfBytesRead << " bytes read, expected " << size
+             << ": " << strerror(errno));
+  }
+
+  for (int i = 0; i < size; i++) {
+    if (data[i] == 0xff) {
+      LOG_WARN(logger, "packet contained 0xff at i=" << i << " => discarding packet");
+      return 0;
+    }
+  }
+
+  return nrOfBytesRead;
 }
 
 void Master::doSampleNodes() {

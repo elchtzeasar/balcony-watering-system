@@ -3,11 +3,13 @@
 #include "ConfigurationFile.h"
 #include "IADS1015Configuration.h"
 #include "IAnalogSoilMoistureSensorConfiguration.h"
+#include "IArduinoConfiguration.h"
 #include "IPwmMotorControllerConfiguration.h"
 #include "ISi7021SensorConfiguration.h"
 #include "ISimulationConfiguration.h"
 #include "ADS1015.h"
 #include "AnalogSoilMoistureSensor.h"
+#include "Arduino.h"
 #include "PwmMotorController.h"
 #include "Si7021Sensor.h"
 #include "SimulatedMotor.h"
@@ -86,6 +88,13 @@ void HWFactory::create() {
   }
   for (const auto& configuration : configurationFile.getADS1015Configurations()) {
     auto circuit = new ADS1015(configuration->getNamePrefix(), master);
+    circuits.push_back(circuit);
+    const auto& sensorInputs = circuit->getAnalogInputs();
+    transform(sensorInputs.begin(), sensorInputs.end(), back_inserter(analogInputs),
+        [](const AnalogInput& input) -> IAnalogInput const* { return &input; });
+  }
+  for (const auto& configuration : configurationFile.getArduinoConfigurations()) {
+    auto circuit = new Arduino(configuration->getAddress(), configuration->getNamePrefix(), master);
     circuits.push_back(circuit);
     const auto& sensorInputs = circuit->getAnalogInputs();
     transform(sensorInputs.begin(), sensorInputs.end(), back_inserter(analogInputs),

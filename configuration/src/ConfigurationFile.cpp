@@ -1,6 +1,7 @@
 #include "ConfigurationFile.h"
 
 #include "ADS1015Configuration.h"
+#include "ArduinoConfiguration.h"
 #include "HumidityMeasurementConfiguration.h"
 #include "GroveSoilMoistureSensorConfiguration.h"
 #include "IConfiguration.h"
@@ -207,6 +208,20 @@ const vector<IADS1015Configuration const *> ConfigurationFile::getADS1015Configu
   return result;
 }
 
+const vector<IArduinoConfiguration const *> ConfigurationFile::getArduinoConfigurations() const {
+  vector<IArduinoConfiguration const *> result;
+
+  for (const auto configuration : configurations) {
+    auto specializedConfiguration = dynamic_cast<IArduinoConfiguration const*>(configuration);
+
+    if (specializedConfiguration) {
+      result.push_back(specializedConfiguration);
+    }
+  }
+
+  return result;
+}
+
 const std::vector<IPwmMotorControllerConfiguration const *> ConfigurationFile::getPwmMotorControllerConfigurations() const {
   vector<IPwmMotorControllerConfiguration const *> result;
 
@@ -324,6 +339,9 @@ IConfiguration* ConfigurationFile::createConfiguration(const string& type) {
   }
   else if (type == "ADS1015") {
     return new ADS1015Configuration();
+  }
+  else if (type == "Arduino") {
+    return new ArduinoConfiguration();
   }
   assert(false && "unknown type");
   return nullptr;

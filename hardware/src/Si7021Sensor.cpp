@@ -46,6 +46,7 @@ const string& Si7021Sensor::getName() const {
 }
 
 void Si7021Sensor::doSample() {
+  LOG_TRACE(logger, "doSample");
   master.setNodeAddress(0x40);
 
   master.writeByte(uint8_t{MEASURE_RELATIVE_HUMIDITY_NO_HOLD_MASTER});

@@ -92,6 +92,7 @@ ADS1015::~ADS1015() {
 }
 
 void ADS1015::doSample() {
+  LOG_TRACE(logger, "doSample");
   for (int i = 0; i < 4; i++) {
     master.setNodeAddress(0x48);
 

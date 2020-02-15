@@ -1,6 +1,8 @@
 #ifndef HARDWARE_SRC_MASTER_H_
 #define HARDWARE_SRC_MASTER_H_
 
+#include "Logger.h"
+
 #include <vector>
 #include <stddef.h>
 #include <stdint.h>
@@ -31,6 +33,8 @@ public:
   void doShutdownNodes();
 
 private:
+  platform::Logger logger;
+
   std::vector<IReadNode*> readNodes;
   std::vector<IWriteNode*> writeNodes;
   std::vector<IAdapterNode*> adapterNodes;
