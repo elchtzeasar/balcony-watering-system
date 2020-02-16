@@ -4,10 +4,12 @@ find_library (MENU_LIBRARY menu)
 include_directories (${PROJECT_SOURCE_DIR}/platform/include)
 include_directories (${PROJECT_SOURCE_DIR}/hardware/include)
 include_directories (${PROJECT_SOURCE_DIR}/logic/include)
-include_directories (${PROJECT_SOURCE_DIR}/ui/include)
+include_directories (${PROJECT_SOURCE_DIR}/app/include)
 
-add_library (ui src/TextGui.cpp)
+add_library (app
+  src/App.cpp
+  src/TextGui.cpp)
 
-target_link_libraries (ui LINK_PUBLIC
+target_link_libraries (app LINK_PUBLIC
   ${CURSES_LIBRARIES}
   ${MENU_LIBRARY})

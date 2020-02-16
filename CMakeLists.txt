@@ -9,7 +9,7 @@ add_subdirectory (platform)
 add_subdirectory (configuration)
 add_subdirectory (hardware)
 add_subdirectory (logic)
-add_subdirectory (ui)
+add_subdirectory (app)
 
 add_subdirectory (main)
 

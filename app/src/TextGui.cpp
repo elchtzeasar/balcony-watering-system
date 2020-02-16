@@ -24,7 +24,7 @@
 #include <vector>
 
 namespace balcony_watering_system {
-namespace ui {
+namespace app {
 
 using ::balcony_watering_system::logic::LogicFactory;
 using ::balcony_watering_system::logic::WateringLogic;

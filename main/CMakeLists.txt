@@ -6,7 +6,7 @@ include_directories (${PROJECT_SOURCE_DIR}/platform/include)
 include_directories (${PROJECT_SOURCE_DIR}/configuration/include)
 include_directories (${PROJECT_SOURCE_DIR}/hardware/include)
 include_directories (${PROJECT_SOURCE_DIR}/logic/include)
-include_directories (${PROJECT_SOURCE_DIR}/ui/include)
+include_directories (${PROJECT_SOURCE_DIR}/app/include)
 
 include_directories (${PROJECT_SOURCE_DIR}/../boost.di/include/)
 
@@ -19,7 +19,7 @@ target_link_libraries (BalconyWateringSystem LINK_PUBLIC
   configuration
   hardware
   logic
-  ui
+  app
   platform
   stdc++fs
   Threads::Threads

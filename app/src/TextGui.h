@@ -1,5 +1,5 @@
-#ifndef UI_SRC_TEXTGUI_H_
-#define UI_SRC_TEXTGUI_H_
+#ifndef APP_SRC_TEXTGUI_H_
+#define APP_SRC_TEXTGUI_H_
 
 #include "Logger.h"
 
@@ -29,7 +29,7 @@ namespace balcony_watering_system::hardware {
 }
 
 namespace balcony_watering_system {
-namespace ui {
+namespace app {
 
 class TextGui {
 public:
@@ -115,4 +115,4 @@ private:
 } /* namespace ui */
 } /* namespace balcony_watering_system */
 
-#endif /* UI_SRC_TEXTGUI_H_ */
+#endif /* APP_SRC_TEXTGUI_H_ */

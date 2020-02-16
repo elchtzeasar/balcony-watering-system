@@ -1,7 +1,7 @@
 #include "BalconyWateringSystem.h"
 
+#include "App.h"
 #include "Logic.h"
-#include "TextGui.h"
 #include "Master.h"
 
 #include <chrono>
@@ -10,14 +10,18 @@
 namespace balcony_watering_system {
 namespace main {
 
+using ::balcony_watering_system::logic::Logic;
+using ::balcony_watering_system::hardware::Master;
+using ::balcony_watering_system::app::App;
 using ::std::this_thread::sleep_for;
 using ::std::chrono::milliseconds;
 
-BalconyWateringSystem::BalconyWateringSystem(
-    logic::Logic& logic, hardware::Master& master, ui::TextGui& gui) :
+BalconyWateringSystem::BalconyWateringSystem(Logic& logic,
+                                             Master& master,
+                                             App& app) :
     master(master),
     logic(logic),
-    gui(gui) {
+    app(app) {
 }
 
 BalconyWateringSystem::~BalconyWateringSystem() {
@@ -29,7 +33,7 @@ void BalconyWateringSystem::run() {
   while (keepRunning) {
     master.doSampleNodes();
 
-    keepRunning = gui.exec();
+    keepRunning = app.exec();
     logic.control();
 
     master.doControlNodes();

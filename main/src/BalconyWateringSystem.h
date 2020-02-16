@@ -9,8 +9,8 @@ namespace balcony_watering_system::logic {
 class Logic;
 }
 
-namespace balcony_watering_system::ui {
-class TextGui;
+namespace balcony_watering_system::app {
+class App;
 }
 
 namespace balcony_watering_system {
@@ -18,7 +18,9 @@ namespace main {
 
 class BalconyWateringSystem {
 public:
-  BalconyWateringSystem(logic::Logic& logic, hardware::Master& master, ui::TextGui& gui);
+  BalconyWateringSystem(logic::Logic& logic,
+                        hardware::Master& master,
+                        app::App& app);
   virtual ~BalconyWateringSystem();
 
   BalconyWateringSystem& operator=(BalconyWateringSystem&) = delete;
@@ -29,7 +31,7 @@ public:
 private:
   hardware::Master& master;
   logic::Logic& logic;
-  ui::TextGui& gui;
+  app::App& app;
 };
 
 } /* namespace main */
