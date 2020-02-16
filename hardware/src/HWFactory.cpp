@@ -127,6 +127,7 @@ IMotorController& HWFactory::getMotor(const std::string& name) {
   }
 
   assert(false && "could not find motor");
+  return *motors.front();
 }
 
 const IMotorController& HWFactory::getMotor(const std::string& name) const {
@@ -137,6 +138,7 @@ const IMotorController& HWFactory::getMotor(const std::string& name) const {
   }
 
   assert(false && "could not find motor");
+  return *motors.front();
 }
 
 const std::vector<IMotorController*>& HWFactory::getMotors() {
@@ -155,6 +157,7 @@ ITemperatureSensor& HWFactory::getTemperatureSensor(const std::string& name) {
   }
 
   assert(false && "could not find sensor");
+  return *temperatureSensors.front();
 }
 
 const ITemperatureSensor& HWFactory::getTemperatureSensor(const std::string& name) const {
@@ -165,6 +168,7 @@ const ITemperatureSensor& HWFactory::getTemperatureSensor(const std::string& nam
   }
 
   assert(false && "could not find sensor");
+  return *temperatureSensors.front();
 }
 
 const std::vector<ITemperatureSensor*>& HWFactory::getTemperatureSensors() {
@@ -183,6 +187,7 @@ ISoilMoistureSensor& HWFactory::getSoilMoistureSensor(const std::string& name) {
   }
 
   assert(false && "could not find sensor");
+  return *soilMoistureSensors.front();
 }
 
 const ISoilMoistureSensor& HWFactory::getSoilMoistureSensor(const std::string& name) const {
@@ -193,6 +198,7 @@ const ISoilMoistureSensor& HWFactory::getSoilMoistureSensor(const std::string& n
   }
 
   assert(false && "could not find sensor");
+  return *soilMoistureSensors.front();
 }
 
 const std::vector<ISoilMoistureSensor*>& HWFactory::getSoilMoistureSensors() {
@@ -211,6 +217,7 @@ IDistanceSensor& HWFactory::getDistanceSensor(const std::string& name) {
   }
 
   assert(false && "could not find sensor");
+  return *distanceSensors.front();
 }
 
 const IDistanceSensor& HWFactory::getDistanceSensor(const std::string& name) const {
@@ -221,6 +228,7 @@ const IDistanceSensor& HWFactory::getDistanceSensor(const std::string& name) con
   }
 
   assert(false && "could not find sensor");
+  return *distanceSensors.front();
 }
 
 const std::vector<IDistanceSensor*>& HWFactory::getDistanceSensors() {
@@ -239,6 +247,7 @@ IHumiditySensor& HWFactory::getHumiditySensor(const std::string& name) {
   }
 
   assert(false && "could not find sensor");
+  return *humiditySensors.front();
 }
 
 const IHumiditySensor& HWFactory::getHumiditySensor(const std::string& name) const {
@@ -249,6 +258,7 @@ const IHumiditySensor& HWFactory::getHumiditySensor(const std::string& name) con
   }
 
   assert(false && "could not find sensor");
+  return *humiditySensors.front();
 }
 
 const std::vector<IHumiditySensor*>& HWFactory::getHumiditySensors() {
@@ -265,7 +275,8 @@ const IAnalogInput& HWFactory::getAnalogInput(const std::string& name) const {
     }
   }
 
-  assert(false && "could not find sensor");
+  assert(false && "could not find analog input");
+  return *analogInputs.front();
 }
 
 const std::vector<IAnalogInput const*>& HWFactory::getAnalogInputs() {

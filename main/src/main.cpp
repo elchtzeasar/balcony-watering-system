@@ -17,16 +17,16 @@ using boost::di::make_injector;
 int main(int argc, char **argv) {
   auto injector = make_injector();
 
-  auto& configuration = injector.create<ConfigurationFile&>();
+  ConfigurationFile& configuration = injector.create<ConfigurationFile&>();
   configuration.parse();
 
-  auto& hwFactory = injector.create<HWFactory&>();
+  HWFactory& hwFactory = injector.create<HWFactory&>();
   hwFactory.create();
 
-  auto& logicFactory = injector.create<LogicFactory&>();
+  LogicFactory& logicFactory = injector.create<LogicFactory&>();
   logicFactory.create();
 
-  auto& system = injector.create<BalconyWateringSystem&>();
+  BalconyWateringSystem& system = injector.create<BalconyWateringSystem&>();
   system.run();
 
 	return 0;

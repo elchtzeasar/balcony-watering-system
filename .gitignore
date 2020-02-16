@@ -5,6 +5,10 @@ CMakeCache.txt
 *.cmake
 *~
 Makefile
+build.ninja
+rules.ninja
+.ninja_deps
+.ninja_log
 *.a
 main/BalconyWateringSystem
 install_manifest.txt
