@@ -6,6 +6,7 @@
 #include "Logger.h"
 
 #include <chrono>
+#include <iosfwd>
 
 namespace balcony_watering_system {
 namespace logic {
@@ -55,6 +56,8 @@ private:
 
   platform::Logger logger;
 };
+
+std::ostream& operator<<(std::ostream& stream, const WateringLogic::State& state);
 
 } /* namespace logic */
 } /* namespace balcony_watering_system */

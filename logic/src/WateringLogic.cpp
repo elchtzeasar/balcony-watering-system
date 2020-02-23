@@ -123,6 +123,17 @@ bool WateringLogic::handleNotWatering() const {
   return wateringDone;
 }
 
+std::ostream& operator<<(std::ostream& stream, const WateringLogic::State& state) {
+  switch (state) {
+  case WateringLogic::State::IDLE: stream << "IDLE"; break;
+  case WateringLogic::State::WATERING: stream << "WATERING"; break;
+  case WateringLogic::State::NOT_WATERING: stream << "NOT_WATERING"; break;
+  default: stream << "UNKNOWN: " << int(state); break;
+  }
+
+  return stream;
+}
+
 } /* namespace logic */
 } /* namespace balcony_watering_system */
 

@@ -82,6 +82,13 @@ void Arduino::doSample() {
   }
 }
 
+void Arduino::shutdown() {
+  LOG_TRACE(logger, "shutdown");
+
+  master.setNodeAddress(address);
+  master.writeByte(uint8_t{SHUTDOWN_COMMAND});
+}
+
 const std::vector<AnalogInput>& Arduino::getAnalogInputs() const {
   return analogInputs;
 }

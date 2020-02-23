@@ -38,7 +38,8 @@ LogicFactory::LogicFactory(const ConfigurationFile& configurationFile,
   logic(logic),
   hwFactory(hwFactory),
   pumps(),
-  soilMoistureMeasurements() {
+  soilMoistureMeasurements(),
+  wateringLogic(nullptr) {
 }
 
 LogicFactory::~LogicFactory() {
@@ -97,16 +98,16 @@ void LogicFactory::create() {
     volumeMeasurements.push_back(new VolumeMeasurement(*configuration, sensor));
   }
 
-  for (const auto configuration : configurationFile.getWateringLogicConfigurations()) {
-    auto* soil = getSoilMoistureMeasurement(configuration->getSoilMoistureMeasurement());
-    auto* temperature = getTemperatureMeasurement(configuration->getTemperatureMeasurement());
-    auto* humidity = getHumidityMeasurement(configuration->getHumidityMeasurement());
-    auto* pump = getPump(configuration->getPumpController());
-    const auto& timeToWater = configuration->getTimeToWater();
-    const auto& timeToNotWater = configuration->getTimeToNotWater();
+  {
+    const auto& configuration = configurationFile.getWateringLogicConfiguration();
+    auto* soil = getSoilMoistureMeasurement(configuration.getSoilMoistureMeasurement());
+    auto* temperature = getTemperatureMeasurement(configuration.getTemperatureMeasurement());
+    auto* humidity = getHumidityMeasurement(configuration.getHumidityMeasurement());
+    auto* pump = getPump(configuration.getPumpController());
+    const auto& timeToWater = configuration.getTimeToWater();
+    const auto& timeToNotWater = configuration.getTimeToNotWater();
 
-    wateringLogics.push_back(
-        new WateringLogic(logic, soil, temperature, humidity, pump, timeToWater, timeToNotWater));
+    wateringLogic = new WateringLogic(logic, soil, temperature, humidity, pump, timeToWater, timeToNotWater);
   }
 }
 
@@ -205,12 +206,14 @@ const VolumeMeasurement* LogicFactory::getVolumeMeasurement(const string& name) 
   return nullptr;
 }
 
-const std::vector<WateringLogic*>& LogicFactory::getWateringLogics() {
-  return wateringLogics;
+const WateringLogic& LogicFactory::getWateringLogic() {
+  assert(wateringLogic != nullptr && "no watering logic created");
+  return *wateringLogic;
 }
 
-const std::vector<WateringLogic*>& LogicFactory::getWateringLogics() const {
-  return wateringLogics;
+const WateringLogic& LogicFactory::getWateringLogic() const {
+  assert(wateringLogic != nullptr && "no watering logic created");
+  return *wateringLogic;
 }
 
 

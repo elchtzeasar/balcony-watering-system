@@ -1,5 +1,6 @@
 #include "ConfigurationFile.h"
 
+#include "AppConfiguration.h"
 #include "ADS1015Configuration.h"
 #include "ArduinoConfiguration.h"
 #include "HumidityMeasurementConfiguration.h"
@@ -81,18 +82,34 @@ const vector<IPumpConfiguration const *> ConfigurationFile::getPumpConfiguration
   return result;
 }
 
-const vector<IWateringLogicConfiguration const *> ConfigurationFile::getWateringLogicConfigurations() const {
-  vector<IWateringLogicConfiguration const *> result;
+const IWateringLogicConfiguration& ConfigurationFile::getWateringLogicConfiguration() const {
+  IWateringLogicConfiguration const * result = nullptr;
 
   for (const auto configuration : configurations) {
     auto specializedConfiguration = dynamic_cast<IWateringLogicConfiguration const*>(configuration);
 
     if (specializedConfiguration) {
-      result.push_back(specializedConfiguration);
+      result = specializedConfiguration;
     }
   }
 
-  return result;
+  assert(result != nullptr && "could not find logic");
+  return *result;
+}
+
+const IAppConfiguration& ConfigurationFile::getAppConfiguration() const {
+  IAppConfiguration const * result = nullptr;
+
+  for (const auto configuration : configurations) {
+    auto specializedConfiguration = dynamic_cast<IAppConfiguration const*>(configuration);
+
+    if (specializedConfiguration) {
+      result = specializedConfiguration;
+    }
+  }
+
+  assert(result != nullptr && "could not find app");
+  return *result;
 }
 
 
@@ -307,7 +324,10 @@ ConfigurationFile::ConsumeResult ConfigurationFile::consume(
 }
 
 IConfiguration* ConfigurationFile::createConfiguration(const string& type) {
-  if (type == "WateringLogic") {
+  if (type == "App") {
+    return new AppConfiguration();
+  }
+  else if (type == "WateringLogic") {
     return new WateringLogicConfiguration();
   }
   else if (type == "HumidityMeasurement") {

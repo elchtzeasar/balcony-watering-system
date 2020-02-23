@@ -1,6 +1,11 @@
 #ifndef APP_INCLUDE_APP_H_
 #define APP_INCLUDE_APP_H_
 
+#include <chrono>
+
+namespace balcony_watering_system::configuration {
+class ConfigurationFile;
+}
 namespace balcony_watering_system::logic {
 class LogicFactory;
 }
@@ -13,11 +18,14 @@ namespace app {
 
 class App {
 public:
-  App(const logic::LogicFactory& logicFactory,
+  App(const configuration::ConfigurationFile& configuration,
+      const logic::LogicFactory& logicFactory,
       const hardware::HWFactory& hwFactory);
   virtual ~App();
 
   bool exec();
+
+  const std::chrono::milliseconds& getCycleTime() const;
 
 private:
   class Pimpl;

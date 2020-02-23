@@ -2,8 +2,9 @@
 #define HARDWARE_SRC_ARDUINO_H_
 
 #include "IReadNode.h"
-#include "AnalogInput.h"
+#include "IArduino.h"
 
+#include "AnalogInput.h"
 #include "Logger.h"
 
 #include <vector>
@@ -13,12 +14,13 @@ namespace hardware {
 
 class Master;
 
-class Arduino : public IReadNode {
+class Arduino : public IArduino, public IReadNode {
  public:
   Arduino(int address, const std::string& namePrefix, Master& master);
   virtual ~Arduino();
 
   virtual void doSample() override;
+  virtual void shutdown() override;
 
   virtual const std::vector<AnalogInput>& getAnalogInputs() const;
 

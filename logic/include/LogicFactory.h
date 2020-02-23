@@ -51,8 +51,8 @@ public:
   const std::vector<VolumeMeasurement*>& getVolumeMeasurements() const;
   const VolumeMeasurement* getVolumeMeasurement(const std::string& name) const;
 
-  const std::vector<WateringLogic*>& getWateringLogics();
-  const std::vector<WateringLogic*>& getWateringLogics() const;
+  const WateringLogic& getWateringLogic();
+  const WateringLogic& getWateringLogic() const;
 
 private:
   const configuration::ConfigurationFile& configurationFile;
@@ -64,7 +64,7 @@ private:
   std::vector<SoilMoistureMeasurement*> soilMoistureMeasurements;
   std::vector<TemperatureMeasurement*> temperatureMeasurements;
   std::vector<VolumeMeasurement*> volumeMeasurements;
-  std::vector<WateringLogic*> wateringLogics;
+  WateringLogic const* wateringLogic;
 };
 
 } /* namespace logic */

@@ -88,7 +88,7 @@ private:
   void doIncreasePumps();
   void doDecreasePumps();
 
-  const std::vector<logic::WateringLogic*> wateringLogics;
+  const logic::WateringLogic& wateringLogic;
 
   const std::vector<logic::Pump*> pumps;
   const std::vector<hardware::IMotorController*> motors;

@@ -33,12 +33,12 @@ void BalconyWateringSystem::run() {
   while (keepRunning) {
     master.doSampleNodes();
 
-    keepRunning = app.exec();
     logic.control();
+    keepRunning = app.exec();
 
     master.doControlNodes();
 
-    sleep_for(milliseconds(100));
+    sleep_for(app.getCycleTime());
   }
 
   master.doShutdownNodes();

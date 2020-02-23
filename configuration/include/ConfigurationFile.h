@@ -22,6 +22,7 @@ class ISoilMoistureMeasurementConfiguration;
 class ITemperatureMeasurementConfiguration;
 class IVolumeMeasurementConfiguration;
 class IWateringLogicConfiguration;
+class IAppConfiguration;
 
 class ConfigurationFile {
 public:
@@ -33,7 +34,8 @@ public:
 
   void parse();
 
-  const std::vector<IWateringLogicConfiguration const *> getWateringLogicConfigurations() const;
+  const IWateringLogicConfiguration& getWateringLogicConfiguration() const;
+  const IAppConfiguration& getAppConfiguration() const;
 
   const std::vector<IHumidityMeasurementConfiguration const *> getHumidityMeasurementConfigurations() const;
   const std::vector<ISoilMoistureMeasurementConfiguration const *>

@@ -39,6 +39,7 @@ HWFactory::HWFactory(const ConfigurationFile& configurationFile,
   soilMoistureSensors(),
   temperatureSensors(),
   circuits(),
+  arduino(nullptr),
   analogInputs() {
 }
 
@@ -94,11 +95,12 @@ void HWFactory::create() {
         [](const AnalogInput& input) -> IAnalogInput const* { return &input; });
   }
   for (const auto& configuration : configurationFile.getArduinoConfigurations()) {
-    auto circuit = new Arduino(configuration->getAddress(), configuration->getNamePrefix(), master);
-    circuits.push_back(circuit);
-    const auto& sensorInputs = circuit->getAnalogInputs();
+    auto impl = new Arduino(configuration->getAddress(), configuration->getNamePrefix(), master);
+    const auto& sensorInputs = impl->getAnalogInputs();
     transform(sensorInputs.begin(), sensorInputs.end(), back_inserter(analogInputs),
         [](const AnalogInput& input) -> IAnalogInput const* { return &input; });
+
+    arduino = impl;
   }
   for (const auto& configuration : configurationFile.getAnalogSoilMoistureSensors()) {
     const auto& analogInput = getAnalogInput(configuration->getInputName());
@@ -268,6 +270,12 @@ const std::vector<IHumiditySensor*>& HWFactory::getHumiditySensors() {
 const std::vector<IHumiditySensor*>& HWFactory::getHumiditySensors() const {
   return humiditySensors;
 }
+
+IArduino& HWFactory::getArduino() const {
+  assert(arduino && "must create arduino before getting");
+  return *arduino;
+}
+
 const IAnalogInput& HWFactory::getAnalogInput(const std::string& name) const {
   for (auto input : analogInputs) {
     if (input->getName() == name) {

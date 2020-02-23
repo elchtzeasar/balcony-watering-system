@@ -47,7 +47,7 @@ static const int DATA_COLUMN = 3;
 static const int FIRST_DATA_ROW = 2;
 
 TextGui::TextGui(const LogicFactory& logicFactory, const HWFactory& hwFactory) :
-    wateringLogics(logicFactory.getWateringLogics()),
+    wateringLogic(logicFactory.getWateringLogic()),
     pumps(logicFactory.getPumps()),
     motors(hwFactory.getMotors()),
     humidityMeasurements(logicFactory.getHumidityMeasurements()),
@@ -199,19 +199,17 @@ void TextGui::doDecreasePumps() {
 }
 
 int TextGui::updateWateringLogicMessages(int nextRow) {
-  for (auto logic : wateringLogics) {
-    const auto state = logic->getState();
+  const auto state = wateringLogic.getState();
 
-    string message = "unknown";
-    switch (state) {
-    case WateringLogic::State::IDLE: message = "idle"; break;
-    case WateringLogic::State::WATERING: message = "watering"; break;
-    case WateringLogic::State::NOT_WATERING: message = "not watering"; break;
-    }
-
-    displayMessage(nextRow, "Watering Logic", message);
-    nextRow++;
+  string message = "unknown";
+  switch (state) {
+  case WateringLogic::State::IDLE: message = "idle"; break;
+  case WateringLogic::State::WATERING: message = "watering"; break;
+  case WateringLogic::State::NOT_WATERING: message = "not watering"; break;
   }
+
+  displayMessage(nextRow, "Watering Logic", message);
+  nextRow++;
   return nextRow;
 }
 
