@@ -8,6 +8,7 @@ class IArduino {
 public:
   virtual ~IArduino() = default;
 
+  virtual bool isShutdownEnabled() const = 0;
   virtual void shutdown() = 0;
 };
 

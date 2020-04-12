@@ -17,12 +17,14 @@ public:
   virtual void setField(const std::string& fieldName, const std::string& value) override;
 
   virtual int getAddress() const override;
+  virtual int getShutdownEnabledPin() const override;
   virtual const std::string& getNamePrefix() const override;
 
 private:
   const platform::Logger logger;
 
   int address;
+  int shutdownEnabledPin;
   std::string namePrefix;
 };
 

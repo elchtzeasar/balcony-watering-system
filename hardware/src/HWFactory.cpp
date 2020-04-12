@@ -95,7 +95,10 @@ void HWFactory::create() {
         [](const AnalogInput& input) -> IAnalogInput const* { return &input; });
   }
   for (const auto& configuration : configurationFile.getArduinoConfigurations()) {
-    auto impl = new Arduino(configuration->getAddress(), configuration->getNamePrefix(), master);
+    auto impl = new Arduino(configuration->getAddress(),
+                            configuration->getShutdownEnabledPin(),
+                            configuration->getNamePrefix(),
+                            master);
     const auto& sensorInputs = impl->getAnalogInputs();
     transform(sensorInputs.begin(), sensorInputs.end(), back_inserter(analogInputs),
         [](const AnalogInput& input) -> IAnalogInput const* { return &input; });

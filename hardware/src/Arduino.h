@@ -5,6 +5,7 @@
 #include "IArduino.h"
 
 #include "AnalogInput.h"
+#include "InputPin.h"
 #include "Logger.h"
 
 #include <vector>
@@ -16,10 +17,11 @@ class Master;
 
 class Arduino : public IArduino, public IReadNode {
  public:
-  Arduino(int address, const std::string& namePrefix, Master& master);
+  Arduino(int address, int shutdownEnabledPin, const std::string& namePrefix, Master& master);
   virtual ~Arduino();
 
   virtual void doSample() override;
+  virtual bool isShutdownEnabled() const override;
   virtual void shutdown() override;
 
   virtual const std::vector<AnalogInput>& getAnalogInputs() const;
@@ -28,6 +30,7 @@ class Arduino : public IArduino, public IReadNode {
   const int address;
   Master& master;
 
+  InputPin shutdownEnabled;
   std::vector<AnalogInput> analogInputs;
 
   const platform::Logger logger;

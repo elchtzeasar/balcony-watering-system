@@ -22,13 +22,16 @@ enum Commands {
 
 static const int NR_OF_INPUTS = 6;
 
-Arduino::Arduino(int address, const string& namePrefix, Master& master) :
+Arduino::Arduino(int address, int shutdownEnabledPin, const string& namePrefix, Master& master) :
   address(address),
   master(master),
+  shutdownEnabled(shutdownEnabledPin),
   analogInputs(),
   logger("hardware.arduino", namePrefix) {
   LOG_TRACE(logger, "Arduino creating");
   master.registerReadNode(*this);
+
+  shutdownEnabled.setup();
 
   for (int i = 0; i < NR_OF_INPUTS; i++) {
     std::ostringstream stream;
@@ -80,6 +83,10 @@ void Arduino::doSample() {
         << std::dec
         << " => voltage=" << voltage);
   }
+}
+
+bool Arduino::isShutdownEnabled() const {
+  return shutdownEnabled.getValue();
 }
 
 void Arduino::shutdown() {

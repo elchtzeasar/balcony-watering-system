@@ -11,6 +11,7 @@ public:
   virtual ~IArduinoConfiguration() = default;
 
   virtual int getAddress() const = 0;
+  virtual int getShutdownEnabledPin() const = 0;
   virtual const std::string& getNamePrefix() const = 0;
 };
 

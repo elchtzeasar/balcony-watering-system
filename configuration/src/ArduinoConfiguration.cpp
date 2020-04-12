@@ -11,9 +11,13 @@ using ::std::string;
 using ::balcony_watering_system::platform::lexical_cast;
 
 static const int NO_ADDRESS = -1;
+static const int NO_PIN = -1;
 
 ArduinoConfiguration::ArduinoConfiguration() :
-    logger("hardware.arduino.configuration"), address(NO_ADDRESS), namePrefix("") {
+    logger("hardware.arduino.configuration"),
+    address(NO_ADDRESS),
+    shutdownEnabledPin(NO_PIN),
+    namePrefix("") {
 }
 
 ArduinoConfiguration::~ArduinoConfiguration() {
@@ -29,6 +33,10 @@ void ArduinoConfiguration::setField(
     address = lexical_cast<int>(value);
     LOG_DEBUG(logger, "fieldName=" << fieldName << ", value=" << value << " => address=" << address);
   }
+  else if (fieldName == "shutdownEnabledPin") {
+    shutdownEnabledPin = lexical_cast<int>(value);
+    LOG_DEBUG(logger, "fieldName=" << fieldName << ", value=" << value << " => shutdownEnabledPin=" << shutdownEnabledPin);
+  }
   else {
     assert(false && "unknown field");
   }
@@ -37,6 +45,11 @@ void ArduinoConfiguration::setField(
 int ArduinoConfiguration::getAddress() const {
   assert(address != NO_ADDRESS && "address must be set");
   return address;
+}
+
+int ArduinoConfiguration::getShutdownEnabledPin() const {
+  assert(shutdownEnabledPin > NO_PIN && "shutdownEnabledPin must be set");
+  return shutdownEnabledPin;
 }
 
 const string& ArduinoConfiguration::getNamePrefix() const {
