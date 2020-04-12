@@ -1,13 +1,26 @@
 ---
+App:
+  mode: single-run
+  cycle-time-in-millis: 1000
+WateringLogic:
+  soil-moisture: soil
+  humidity: airhumidity
+  temperature: airtemp
+  pump-controller: pump
+  seconds-to-water: 3
+  seconds-to-not-water: 3
 SoilMoistureMeasurement:
   name: soil
   sensor: soilmoisture1
+  threshold: 50
 HumidityMeasurement:
   name: airhumidity
   sensor: therm
+  threshold: 20
 TemperatureMeasurement:
   name: airtemp
   sensor: therm
+  threshold: 30
 Pump:
   name: pump
   motor: ctrl
@@ -15,11 +28,13 @@ PwmMotorController:
   name: ctrl
   output0: 20
   output1: 21
-  pwm: 18
+  pwm: 17
 Si7021Sensor:
   name: therm
-ADS1015:
+Arduino:
+  address: 12
   name-prefix: analog
+  shutdownEnabledPin: 16
 GroveSoilMoistureSensor:
   name: soilmoisture1
   input-name: analog.2
