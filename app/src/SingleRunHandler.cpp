@@ -48,6 +48,7 @@ bool SingleRunHandler::exec() {
   if (!keepRunning && arduino.isShutdownEnabled()) {
     arduino.shutdown();
     system("shutdown -h now");
+    exit(0);
   }
 
   return keepRunning;
