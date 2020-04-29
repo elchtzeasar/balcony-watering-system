@@ -12,6 +12,7 @@ WateringLogic:
 SoilMoistureMeasurement:
   name: soil
   sensor: soilmoisture1
+  sensor: soilmoisture2
   threshold: 50
 HumidityMeasurement:
   name: airhumidity
@@ -38,6 +39,11 @@ Arduino:
 GroveSoilMoistureSensor:
   name: soilmoisture1
   input-name: analog.2
+  water-voltage: 2.4
+  dry-voltage: 3.6
+GroveSoilMoistureSensor:
+  name: soilmoisture2
+  input-name: analog.3
   water-voltage: 2.4
   dry-voltage: 3.6
 
