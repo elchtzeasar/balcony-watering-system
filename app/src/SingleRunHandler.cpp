@@ -30,11 +30,11 @@ bool SingleRunHandler::exec() {
   bool keepRunning;
 
   switch (state) {
-  case WateringLogic::State::IDLE:
   case WateringLogic::State::NOT_WATERING:
     keepRunning = false;
     LOG_INFO(logger, "state=" << state << " => shutting down");
     break;
+  case WateringLogic::State::IDLE:
   case WateringLogic::State::WATERING:
     keepRunning = true;
     LOG_INFO(logger, "state=" << state << " => waiting");

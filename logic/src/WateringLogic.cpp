@@ -44,36 +44,48 @@ WateringLogic::WateringLogic(
 }
 
 void WateringLogic::control() {
-  bool transition;
+  State newState = state;
 
   switch (state) {
-  case State::IDLE:
-    transition = handleIdle();
-    break;
-  case State::WATERING:
-    transition = handleWatering();
-    break;
-  case State::NOT_WATERING:
-    transition = handleNotWatering();
-    break;
+  case State::IDLE: {
+    const bool shouldWater = handleIdle();
+
+    if (shouldWater) {
+      newState = State::WATERING;
+    }
+    else {
+      newState = State::NOT_WATERING;
+    }
+  } break;
+  case State::WATERING: {
+    const bool wateringDone = handleWatering();
+    if (wateringDone) {
+      newState = State::NOT_WATERING;
+    }
+  } break;
+  case State::NOT_WATERING: {
+    const bool transition = handleNotWatering();
+    if (transition) {
+      newState = State::IDLE;
+    }
+  } break;
   }
 
-  if (transition) {
-    switch (state) {
-    case State::IDLE:
+  if (newState != state) {
+    switch (newState) {
+    case State::WATERING:
       pump.start();
-      state = State::WATERING;
       transitionTime = steady_clock::now() + timeToWater;
       break;
-    case State::WATERING:
+    case State::NOT_WATERING:
       pump.stop();
-      state = State::NOT_WATERING;
       transitionTime = steady_clock::now() + timeToNotWater;
       break;
-    case State::NOT_WATERING:
-      state = State::IDLE;
+    case State::IDLE:
       break;
     }
+
+    state = newState;
   }
 }
 
