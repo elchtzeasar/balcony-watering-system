@@ -92,8 +92,10 @@ bool Arduino::isShutdownEnabled() const {
 void Arduino::shutdown() {
   LOG_TRACE(logger, "shutdown");
 
-  master.setNodeAddress(address);
-  master.writeByte(uint8_t{SHUTDOWN_COMMAND});
+  for (int i = 0; i < 3; i++) {
+    master.setNodeAddress(address);
+    master.writeByte(uint8_t{SHUTDOWN_COMMAND});
+  }
 }
 
 const std::vector<AnalogInput>& Arduino::getAnalogInputs() const {
